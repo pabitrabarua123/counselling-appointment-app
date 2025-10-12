@@ -10,7 +10,7 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
               <Heart className="h-8 w-8 text-blue-400" />
-              <span className="text-xl font-bold">MindVoyage</span>
+              <span className="text-xl font-bold">TalkCure</span>
             </div>
             <p className="text-gray-300 mb-6 max-w-md">
               Your trusted partner in mental health and wellness. We provide accessible, 
@@ -19,7 +19,7 @@ const Footer = () => {
             <div className="space-y-2">
               <div className="flex items-center text-gray-300">
                 <Mail className="h-4 w-4 mr-2" />
-                <span>support@mindvoyage.com</span>
+                <span>support@talkcure.com</span>
               </div>
               <div className="flex items-center text-gray-300">
                 <Phone className="h-4 w-4 mr-2" />
@@ -75,7 +75,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2024 MindVoyage. All rights reserved.
+              © 2024 TalkCure. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">

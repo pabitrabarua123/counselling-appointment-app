@@ -7,7 +7,7 @@ import Footer from '@/components/Footer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'MindVoyage - Online Psychotherapy Booking',
+  title: 'TalkCure - Online Psychotherapy Booking',
   description: 'Book online psychotherapy sessions with qualified therapists',
 }
 
