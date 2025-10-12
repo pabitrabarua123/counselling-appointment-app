@@ -4,7 +4,7 @@ A modern Next.js application for booking online psychotherapy sessions with qual
 
 ## Features
 
-- **Multi-step Booking Form**: Intuitive 5-step booking process
+- **Multi-step Booking Form**: Intuitive 4-step booking process
 - **Therapist Profiles**: Detailed profiles with specializations, ratings, and availability
 - **Responsive Design**: Mobile-first design with Tailwind CSS
 - **Type Safety**: Full TypeScript implementation
