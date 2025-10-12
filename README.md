@@ -1,4 +1,4 @@
-# MindVoyage - Online Psychotherapy Booking System
+# TalkCure - bridges the gap between people and counsellors.
 
 A modern Next.js application for booking online psychotherapy sessions with qualified therapists.
 
