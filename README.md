@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MindVoyage - Online Psychotherapy Booking System
+
+A modern Next.js application for booking online psychotherapy sessions with qualified therapists.
+
+## Features
+
+- **Multi-step Booking Form**: Intuitive 5-step booking process
+- **Therapist Profiles**: Detailed profiles with specializations, ratings, and availability
+- **Responsive Design**: Mobile-first design with Tailwind CSS
+- **Type Safety**: Full TypeScript implementation
+- **Modern UI**: Clean, accessible interface with smooth animations
+
+## Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Styling**: Tailwind CSS
+- **Language**: TypeScript
+- **Icons**: Lucide React
+- **UI Components**: Headless UI
 
 ## Getting Started
 
-First, run the development server:
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+2. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
+
+3. **Open in Browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── book/              # Multi-step booking form
+│   ├── therapists/        # Therapist directory
+│   ├── layout.tsx         # Root layout
+│   └── page.tsx           # Home page
+├── components/            # Reusable UI components
+│   ├── Navigation.tsx     # Main navigation
+│   ├── Footer.tsx         # Site footer
+│   ├── LoadingSpinner.tsx # Loading states
+│   └── Notification.tsx   # Toast notifications
+├── data/                  # Static data
+│   └── therapists.ts      # Therapist and session data
+├── lib/                   # Utility functions
+│   └── utils.ts           # Class name utilities
+└── types/                 # TypeScript type definitions
+    └── index.ts           # Shared types
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Key Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Multi-Step Booking Process
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Choose Therapist**: Select from qualified mental health professionals
+2. **Session Details**: Choose session type, date, and time
+3. **Personal Information**: Provide contact and demographic information
+4. **Preferences**: Share therapy goals and previous experience
+5. **Confirmation**: Review and confirm booking details
 
-## Learn More
+### Therapist Directory
 
-To learn more about Next.js, take a look at the following resources:
+- Comprehensive therapist profiles
+- Specializations and certifications
+- Ratings and reviews
+- Availability and location
+- Language support
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Responsive Design
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Mobile-first approach
+- Touch-friendly interface
+- Accessible navigation
+- Optimized for all screen sizes
 
-## Deploy on Vercel
+## Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Available Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+### Code Quality
+
+- TypeScript for type safety
+- ESLint for code quality
+- Consistent code formatting
+- Component-based architecture
+
+## Deployment
+
+The application is ready for deployment on platforms like:
+
+- Vercel (recommended for Next.js)
+- Netlify
+- AWS Amplify
+- Any Node.js hosting platform
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+For support or questions, please contact the development team or create an issue in the repository.
