@@ -40,13 +40,23 @@ export interface Preferences {
 
 export interface BookingData {
   step: number
+  // Step 1: Service type
+  serviceType: 'individual' | 'couples' | 'teen' | ''
+  // Step 2: Reason for seeking help
+  reason: string
+  // Step 3: Sleep routine
+  sleepQuality: 'Excellent' | 'Good' | 'Fair' | 'Poor' | ''
+  // Step 4: Gender identity
+  genderIdentity: 'Female' | 'Male' | 'Transgender' | ''
+  // Step 5: Provider gender preference
+  providerGenderPreference: 'No preference' | 'Female' | 'Male' | ''
+  // Step 6: Date of birth
+  dateOfBirth: string
+  // Step 7: Therapist selection
   therapistId: string
-  sessionType: string
+  // Step 8: Date and time selection
   date: string
   time: string
-  duration: string
-  personalInfo: PersonalInfo
-  preferences: Preferences
 }
 
 export interface NotificationType {
