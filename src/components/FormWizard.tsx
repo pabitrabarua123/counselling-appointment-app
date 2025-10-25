@@ -1,15 +1,15 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react'
+import { useMemo, useState, useEffect } from 'react'
+import { ChevronLeft, ChevronRight, Check, Zap, Users, AlertTriangle, Moon, Shield, Frown, Briefcase, HelpCircle } from 'lucide-react'
 import { BookingData } from '@/types'
 import { therapists } from '@/data/therapists'
 
-export default function BookWizard() {
+export default function FormWizard() {
   const [bookingData, setBookingData] = useState<BookingData>({
     step: 1,
     serviceType: '',
-    reason: '',
+    reason: [],
     sleepQuality: '',
     genderIdentity: '',
     providerGenderPreference: '',
@@ -28,6 +28,9 @@ export default function BookWizard() {
   const updateBookingData = (updates: Partial<BookingData>) => {
     setBookingData(prev => ({ ...prev, ...updates }))
   }
+useEffect(() => {
+  console.log(bookingData)
+}, [bookingData])
 
   const nextStep = () => {
     if (bookingData.step < totalSteps) {
@@ -73,25 +76,28 @@ export default function BookWizard() {
         return (
           <div className="space-y-6">
             <h3 className="text-2xl font-semibold text-gray-900 mb-6">To get started, please tell us what prompted you to seek help.</h3>
-            <div className="space-y-3">
+            <div className="space-y-3 grid grid-cols-3 gap-2">
               {[
-                "I'm feeling anxious or panicky",
-                "I'm having difficulty in my relationship",
-                'A traumatic experience [past or present]',
-                "I've been having trouble sleeping",
-                "I'm navigating addiction or difficulty with substance abuse",
-                "I'm feeling down or depressed",
-                "I'm dealing with stress at work or school",
-                'Something else'
-              ].map(reason => (
+                { text: "I'm feeling anxious or panicky", icon: Zap },
+                { text: "I'm having difficulty in my relationship", icon: Users },
+                { text: 'A traumatic past experience', icon: AlertTriangle },
+                { text: "I've been having trouble sleeping", icon: Moon },
+                { text: "I'm navigating addiction or difficulty with substance abuse", icon: Shield },
+                { text: "I'm feeling down or depressed", icon: Frown },
+                { text: "I'm dealing with stress at work or school", icon: Briefcase },
+                { text: 'Something else', icon: HelpCircle }
+              ].map(({ text: reason, icon: Icon }) => (
                 <div
                   key={reason}
                   className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                    bookingData.reason === reason ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+                    bookingData.reason.includes(reason) && bookingData.reason.length > 0 ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
                   }`}
-                  onClick={() => updateBookingData({ reason })}
+                  onClick={() => updateBookingData(!bookingData.reason.includes(reason) ? { reason: [...bookingData.reason, reason] } : { reason: bookingData.reason.filter(r => r !== reason) })}
                 >
-                  <p className="text-gray-900">{reason}</p>
+                  <div className="space-x-3">
+                    <p className='flex items-center justify-center'><Icon className="h-6 w-6 text-blue-600" /></p><br/>
+                    <p className="text-gray-900 text-center">{reason}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -250,7 +256,7 @@ export default function BookWizard() {
       case 1:
         return bookingData.serviceType !== ''
       case 2:
-        return bookingData.reason !== ''
+        return bookingData.reason.length > 0
       case 3:
         return bookingData.sleepQuality !== ''
       case 4:
@@ -270,7 +276,7 @@ export default function BookWizard() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto shadow-lg rounded-lg bg-white">
         {/* Thin Progress Bar */}
         <div className="mb-6">
           <div className="w-full h-1 bg-gray-200 rounded">
@@ -279,16 +285,15 @@ export default function BookWizard() {
               style={{ width: `${progressPercent}%`, transition: 'width 200ms ease' }}
             />
           </div>
-          <div className="mt-2 text-sm text-gray-600">Step {bookingData.step} of {totalSteps}</div>
         </div>
 
         {/* Step Content */}
-        <div className="bg-white rounded-lg shadow-sm p-8">
+        <div className="bg-white rounded-lg p-8">
           {renderStepContent()}
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex justify-between mt-8">
+        <div className="flex justify-between mt-8 p-8">
           <button
             onClick={prevStep}
             disabled={bookingData.step === 1}
@@ -302,7 +307,7 @@ export default function BookWizard() {
             <button
               onClick={nextStep}
               disabled={!isStepValid()}
-              className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               Next
               <ChevronRight className="h-4 w-4 ml-2" />
@@ -313,7 +318,7 @@ export default function BookWizard() {
                 // Handle booking confirmation
                 alert('Booking confirmed! You will receive a confirmation email shortly.')
               }}
-              className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer"
             >
               <Check className="h-4 w-4 mr-2" />
               Confirm Booking

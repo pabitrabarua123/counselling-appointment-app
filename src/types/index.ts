@@ -43,7 +43,7 @@ export interface BookingData {
   // Step 1: Service type
   serviceType: 'individual' | 'couples' | 'teen' | ''
   // Step 2: Reason for seeking help
-  reason: string
+  reason: string[]
   // Step 3: Sleep routine
   sleepQuality: 'Excellent' | 'Good' | 'Fair' | 'Poor' | ''
   // Step 4: Gender identity
