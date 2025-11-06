@@ -1,8 +1,31 @@
-  import { BookingData } from '@/types';
+"use client";
+import { BookingData } from '@/types';
+import { useState, useEffect } from 'react';
   import { Zap, Users, AlertTriangle, Moon, Shield, Frown, Briefcase, HelpCircle } from 'lucide-react'
-  import { therapists } from '@/data/therapists'
+import { Therapist, User } from '@prisma/client';
+
+type TherapistWithUser = Therapist & {
+  user: Pick<User, 'name' | 'email'>;
+};
+//  import { therapists } from '@/data/therapists'
+  import Calendar from 'react-calendar'
+  import 'react-calendar/dist/Calendar.css'
   
   const FormSteps = ({bookingData, updateBookingData}: {bookingData: BookingData, updateBookingData: (updates: Partial<BookingData>) => void}) => {
+    const [therapists, setTherapists] = useState<TherapistWithUser[]>([]);
+    useEffect(() => {
+      const fetchTherapists = async () => {
+        try {
+          const response = await fetch('/api/therapist');
+          const data = await response.json();
+          setTherapists(data);
+        } catch (error) {
+          console.error('Error fetching therapists:', error);
+        }
+      };
+      fetchTherapists();
+    }, []);
+
     switch (bookingData.step) {
       case 1:
         return (
@@ -154,9 +177,9 @@
                 >
                   <div className="text-center">
                     <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4"></div>
-                    <h4 className="text-lg font-semibold text-gray-900">{therapist.name}</h4>
-                    <p className="text-blue-600 font-medium">{therapist.specialization}</p>
-                    <p className="text-gray-600 text-sm">{therapist.experience} experience</p>
+                    <h4 className="text-lg font-semibold text-gray-900">{therapist.user.name}</h4>
+                    <p className="text-blue-600 font-medium">{therapist.area}</p>
+                    <p className="text-gray-600 text-sm">{therapist.yearOfExp} experience</p>
                     <div className="flex items-center justify-center mt-2">
                       <span className="text-yellow-400">★</span>
                       <span className="ml-1 text-sm text-gray-600">{therapist.rating}</span>
@@ -175,12 +198,19 @@
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Date</label>
-                <input
-                  type="date"
-                  value={bookingData.date}
-                  onChange={(e) => updateBookingData({ date: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  min={new Date().toISOString().split('T')[0]}
+                <Calendar
+                  onChange={(date) => {
+                    if (date instanceof Date) {
+                      const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+                      updateBookingData({ date: localDate.toISOString().split('T')[0] });
+                    }
+                  }}
+                  value={bookingData.date ? new Date(bookingData.date) : new Date()}
+                  minDate={new Date()}
+                  className="border border-gray-300 rounded-lg p-3"
+                  tileClassName="text-gray-900"
+                  prev2Label={null}
+                  next2Label={null}
                 />
               </div>
               <div>

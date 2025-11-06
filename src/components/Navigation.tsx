@@ -3,9 +3,12 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Heart, Calendar, User, Home } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import { signOut } from 'next-auth/react'
 
 const Navigation = () => {
   const pathname = usePathname()
+  const { data: session } = useSession()
 
   const navItems = [
     { href: '/', label: 'Home', icon: Home },
@@ -44,6 +47,13 @@ const Navigation = () => {
                 </Link>
               )
             })}
+            {session?.user && 
+             <button 
+               onClick={() => signOut({ callbackUrl: '/auth/signin' })}
+               className="flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium border-2 border-blue-400 cursor-pointer text-blue-600 hover:bg-blue-50 transition-colors duration-200"
+             >
+               <span>Logout</span>
+             </button>}
           </div>
         </div>
       </div>

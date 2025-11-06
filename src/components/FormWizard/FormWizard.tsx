@@ -19,6 +19,10 @@ export default function FormWizard() {
     time: ''
   })
 
+  useEffect(() => {
+    console.log('Current Booking Data:', bookingData)
+  }, [bookingData]);
+
   const totalSteps = 8
   const progressPercent = useMemo(() => {
     const completed = Math.max(0, Math.min(totalSteps, bookingData.step - 1))
@@ -40,8 +44,6 @@ export default function FormWizard() {
       updateBookingData({ step: bookingData.step - 1 })
     }
   }
-
-
 
   const isStepValid = () => {
     switch (bookingData.step) {
@@ -92,7 +94,7 @@ export default function FormWizard() {
             className="flex items-center px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="h-4 w-4 mr-2" />
-            Previous
+            Back
           </button>
           
           {bookingData.step < totalSteps ? (
@@ -101,7 +103,7 @@ export default function FormWizard() {
               disabled={!isStepValid()}
               className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              Next
+              Continue
               <ChevronRight className="h-4 w-4 ml-2" />
             </button>
           ) : (
