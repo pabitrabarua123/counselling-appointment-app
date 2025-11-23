@@ -55,8 +55,8 @@ export interface BookingData {
   // Step 7: Therapist selection
   therapistId: string
   // Step 8: Date and time selection
-  date: string
-  time: string
+  sessionDate: string
+  sessionTime: string
 }
 
 export interface NotificationType {

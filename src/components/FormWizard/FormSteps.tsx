@@ -1,17 +1,44 @@
 "use client";
 import { BookingData } from '@/types';
 import { useState, useEffect } from 'react';
-  import { Zap, Users, AlertTriangle, Moon, Shield, Frown, Briefcase, HelpCircle } from 'lucide-react'
+import { Zap, Users, AlertTriangle, Moon, Shield, Frown, Briefcase, HelpCircle } from 'lucide-react'
 import { Therapist, User } from '@prisma/client';
+import Calendar from 'react-calendar'
+import 'react-calendar/dist/Calendar.css'
 
 type TherapistWithUser = Therapist & {
   user: Pick<User, 'name' | 'email'>;
 };
-//  import { therapists } from '@/data/therapists'
-  import Calendar from 'react-calendar'
-  import 'react-calendar/dist/Calendar.css'
+
+interface Slot {
+  time: string,
+  available: boolean
+}
+
+interface GoogleEvent {
+  start?: {
+    dateTime?: string; // full date-time string
+    date?: string;     // all-day event date string
+  }
+}
+
+// Convert 24-hour time string ("HH:MM") to 12-hour format with AM/PM
+function formatTime24To12(time: string) {
+  if (!time || typeof time !== 'string') return time
+  const parts = time.split(':')
+  if (parts.length < 1) return time
+  const hh = parseInt(parts[0], 10)
+  const mm = parts[1] ? parseInt(parts[1], 10) : 0
+  if (Number.isNaN(hh) || Number.isNaN(mm)) return time
+  const period = hh >= 12 ? 'PM' : 'AM'
+  const hour = hh % 12 === 0 ? 12 : hh % 12
+  const minute = String(mm).padStart(2, '0')
+  return `${hour}:${minute} ${period}`
+}
+
   
   const FormSteps = ({bookingData, updateBookingData}: {bookingData: BookingData, updateBookingData: (updates: Partial<BookingData>) => void}) => {
+    
     const [therapists, setTherapists] = useState<TherapistWithUser[]>([]);
     useEffect(() => {
       const fetchTherapists = async () => {
@@ -25,6 +52,52 @@ type TherapistWithUser = Therapist & {
       };
       fetchTherapists();
     }, []);
+
+    const [slots, setSlots] = useState<Slot[]>([]); 
+    useEffect(() => {
+      //console.log(bookingData.sessionDate)
+      const fetchTherapistSlots = async (therapistId: string) => {
+        try {
+          const response = await fetch(`/api/slots?therapistId=${therapistId}`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch slots');
+          }
+          const slots = await response.json();
+          const therapistSlots = slots[0].timing.map((slot: string) => {
+            return {
+              time: slot,
+              available: true
+            }
+          });
+
+          const eventRes = await fetch(`/api/events?therapistId=${therapistId}&date=${bookingData.sessionDate}`);
+          const events = await eventRes.json();
+          console.log('Fetched events for therapist', events);
+
+          const bookedHours = (events as GoogleEvent[])
+          .map((e) => {
+            const dateTime = e.start?.dateTime || e.start?.date;
+            if (!dateTime) return null;
+            return new Date(dateTime).getHours(); // 0–23
+          })
+          .filter((h: number | null): h is number => h !== null);
+
+          const mergedSlots = therapistSlots.map((slot: Slot) => ({
+          ...slot,
+          available: !bookedHours.includes(Number(slot.time)),
+        }));
+
+          setSlots(mergedSlots);
+          console.log('Fetched slots for therapist', therapistId, mergedSlots);
+        } catch (error) {
+          console.error('Error fetching slots:', error);
+        }
+      };
+      if (bookingData.therapistId) {
+        setSlots([]);
+        fetchTherapistSlots(bookingData.therapistId);
+      }
+    }, [bookingData.therapistId, bookingData.sessionDate]);
 
     switch (bookingData.step) {
       case 1:
@@ -169,11 +242,11 @@ type TherapistWithUser = Therapist & {
                 <div
                   key={therapist.id}
                   className={`p-6 border-2 rounded-lg cursor-pointer transition-all ${
-                    bookingData.therapistId === therapist.id
+                    bookingData.therapistId === therapist.userId
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
-                  onClick={() => updateBookingData({ therapistId: therapist.id })}
+                  onClick={() => updateBookingData({ therapistId: therapist.userId })}
                 >
                   <div className="text-center">
                     <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4"></div>
@@ -202,10 +275,10 @@ type TherapistWithUser = Therapist & {
                   onChange={(date) => {
                     if (date instanceof Date) {
                       const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-                      updateBookingData({ date: localDate.toISOString().split('T')[0] });
+                      updateBookingData({ sessionDate: localDate.toISOString().split('T')[0] });
                     }
                   }}
-                  value={bookingData.date ? new Date(bookingData.date) : new Date()}
+                  value={bookingData.sessionDate ? new Date(bookingData.sessionDate) : new Date()}
                   minDate={new Date()}
                   className="border border-gray-300 rounded-lg p-3"
                   tileClassName="text-gray-900"
@@ -215,20 +288,33 @@ type TherapistWithUser = Therapist & {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Time</label>
-                <select
-                  value={bookingData.time}
-                  onChange={(e) => updateBookingData({ time: e.target.value })}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="">Select time</option>
-                  <option value="09:00">9:00 AM</option>
-                  <option value="10:00">10:00 AM</option>
-                  <option value="11:00">11:00 AM</option>
-                  <option value="14:00">2:00 PM</option>
-                  <option value="15:00">3:00 PM</option>
-                  <option value="16:00">4:00 PM</option>
-                  <option value="17:00">5:00 PM</option>
-                </select>
+                { slots.length === 0 && (
+                <div className='h-[200px] flex flex-col items-center justify-center border border-[#3f51b512] shadow-[1px_1px_11px_1px_#eeeeee66] p-5 rounded-xl'>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+                  <p className="text-gray-600 text-center">Checking availability...</p>
+                </div>
+                ) }
+                
+                { slots.length > 0 && (
+                <div className="grid grid-cols-3 gap-3 border border-[#3f51b512] shadow-[1px_1px_11px_1px_#eeeeee66] p-5 rounded-xl">
+                  {slots.map((slot) => (
+                    <div key={slot.time}>
+                      <button
+                        key={slot.time}
+                        disabled={!slot.available}
+                        className={`w-full p-3 font-medium border-1 rounded-lg text-center transition-all ${
+                          bookingData.sessionTime === slot.time
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-gray-300 hover:border-blue-300'
+                        } ${!slot.available ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                        onClick={() => updateBookingData({ sessionTime: slot.time })}
+                      >
+                        {formatTime24To12(slot.time)}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                )}
               </div>
             </div>
           </div>

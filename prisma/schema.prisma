@@ -18,21 +18,23 @@ model User {
   role          Int        @default(0)
   slot          Slot?
   therapist     Therapist?
+  orders        Order[]
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 }
 
 model Therapist {
-  id              String     @id @default(cuid())
-  user            User       @relation(fields: [userId], references: [id])
-  userId          String     @unique
-  degree          String?
-  area            String?
-  yearOfExp       Int?
-  aboutTherapist  String?
-  rating          Int?
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  id                String     @id @default(cuid())
+  user              User       @relation(fields: [userId], references: [id])
+  userId            String     @unique
+  degree            String?
+  area              String?
+  yearOfExp         Int?
+  aboutTherapist    String?
+  rating            Int?
+  googleCalendarId  String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 }
 
 model Slot {
@@ -42,4 +44,19 @@ model Slot {
   userId        String     @unique
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt   
+}
+
+model Order {
+  id               String    @id @default(cuid())
+  amount           Int
+  currency         String    @default("usd")
+  status           String    @default("pending")
+  serviceType      String  
+  sessionStart     DateTime
+  sessionEnd       DateTime
+  therapist        User      @relation(fields: [therapistId], references: [id])
+  therapistId      String
+  stripeSessionId  String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }

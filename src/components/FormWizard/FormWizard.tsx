@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, Check } from 'lucide-react'
 import { BookingData } from '@/types'
 import FormSteps from './FormSteps'
+import CheckoutPage from './Checkout'
 
 export default function FormWizard() {
   const [bookingData, setBookingData] = useState<BookingData>({
@@ -15,8 +16,8 @@ export default function FormWizard() {
     providerGenderPreference: '',
     dateOfBirth: '',
     therapistId: '',
-    date: '',
-    time: ''
+    sessionDate: new Date().toISOString().split('T')[0],
+    sessionTime: ''
   })
 
   useEffect(() => {
@@ -34,9 +35,7 @@ export default function FormWizard() {
   }
 
   const nextStep = () => {
-    if (bookingData.step < totalSteps) {
-      updateBookingData({ step: bookingData.step + 1 })
-    }
+    updateBookingData({ step: bookingData.step + 1 })
   }
 
   const prevStep = () => {
@@ -62,7 +61,7 @@ export default function FormWizard() {
       case 7:
         return bookingData.therapistId !== ''
       case 8:
-        return bookingData.date !== '' && bookingData.time !== ''
+        return bookingData.sessionDate !== '' && bookingData.sessionTime !== ''
       default:
         return false
     }
@@ -84,9 +83,13 @@ export default function FormWizard() {
         {/* Step Content */}
         <div className="bg-white rounded-lg p-8">
           <FormSteps bookingData={bookingData} updateBookingData={updateBookingData} />
+          { bookingData.step === totalSteps + 1 && (
+            <CheckoutPage bookingData={bookingData}/>
+          ) }
         </div>
 
         {/* Navigation Buttons */}
+        { bookingData.step < totalSteps + 1 && (
         <div className="flex justify-between mt-8 p-8">
           <button
             onClick={prevStep}
@@ -96,29 +99,16 @@ export default function FormWizard() {
             <ChevronLeft className="h-4 w-4 mr-2" />
             Back
           </button>
-          
-          {bookingData.step < totalSteps ? (
-            <button
-              onClick={nextStep}
-              disabled={!isStepValid()}
-              className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              Continue
-              <ChevronRight className="h-4 w-4 ml-2" />
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                // Handle booking confirmation
-                alert('Booking confirmed! You will receive a confirmation email shortly.')
-              }}
-              className="flex items-center px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 cursor-pointer"
-            >
-              <Check className="h-4 w-4 mr-2" />
-              Confirm Booking
-            </button>
-          )}
+          <button
+            onClick={nextStep}
+            disabled={!isStepValid()}
+            className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          >
+            Continue
+            <ChevronRight className="h-4 w-4 ml-2" />
+          </button>
         </div>
+        ) }
       </div>
     </div>
   )

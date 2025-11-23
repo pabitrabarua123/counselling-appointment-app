@@ -1,0 +1,87 @@
+import Stripe from "stripe";
+import { PrismaClient } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const prisma = new PrismaClient();
+
+interface CheckoutRequestBody {
+  price: number; // amount in cents
+  serviceType: string;
+  therapistId: string;
+  sessionStart: string; // ISO date string
+  sessionEnd: string;   // ISO date string
+}
+
+// 🧠 POST /api/create-checkout
+export async function POST(req: NextRequest): Promise<NextResponse> {
+  try {
+    const body: CheckoutRequestBody = await req.json();
+    const { price, serviceType, therapistId, sessionStart, sessionEnd } = body;
+
+    // ✅ Validate input
+    if (!price || typeof price !== "number" || price <= 0) {
+      return new NextResponse(
+        JSON.stringify({ error: "Invalid price" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // ✅ Create a pending order in your DB
+    const order = await prisma.order.create({
+      data: {
+        amount: price,
+        serviceType: serviceType,
+        therapistId: therapistId,
+        sessionStart: sessionStart,
+        sessionEnd: sessionEnd,
+        status: "PENDING",
+      },
+    });
+
+    // ✅ Create a Stripe Checkout Session (currency fixed on server)
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd", // fixed
+            product_data: {
+              name: serviceType || `Order at ${new Date().toISOString()}`,
+            },
+            unit_amount: price,
+          },
+          quantity: 1,
+        },
+      ],
+      success_url: `${
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+      }/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+      }/checkout/cancel`,
+      metadata: {
+        orderId: order.id,
+      },
+    });
+
+    // ✅ Update order with the Stripe session ID
+    await prisma.order.update({
+      where: { id: order.id },
+      data: { stripeSessionId: session.id },
+    });
+
+    // ✅ Return Checkout URL to client
+    return new NextResponse(
+      JSON.stringify({ url: session.url }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+  } catch (error: unknown) {
+    console.error("Stripe checkout error:", error);
+    return new NextResponse(
+      JSON.stringify({ error: "Internal server error" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}
