@@ -37,6 +37,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 400 });
   }
 
+  if (!req.body) {
+    return NextResponse.json({ error: "Missing request body" }, { status: 400 });
+  }
+
   let event: Stripe.Event;
 
   try {
