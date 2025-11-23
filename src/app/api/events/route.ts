@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   try {
     const result = await prisma.therapist.findUnique({
       select: { googleCalendarId: true },
-      where: { userId: therapistId }
+      where: { userId: therapistId ? therapistId : "" },
     });
     const googleCalendarId = result?.googleCalendarId ?? null;
     console.log(googleCalendarId);
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     const calendar = google.calendar({ version: "v3", auth });
 
     const response = await calendar.events.list({
-      calendarId: googleCalendarId,
+      calendarId: googleCalendarId ? googleCalendarId : "primary",
       timeMin: timeMin,
       maxResults: 10,
       timeMax: timeMax,
