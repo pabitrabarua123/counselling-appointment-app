@@ -1,6 +1,30 @@
-// Server Component (top-level page)
-import CheckoutStatusWrapper from "@/components/CheckoutStatus/CheckoutStatusWrapper";
+import CheckoutStatus from "@/components/CheckoutStatus/CheckoutStatus";
 
-export default function SuccessPage() {
-  return <CheckoutStatusWrapper />;
+export default async function SuccessPage({ 
+  searchParams 
+}: { 
+  searchParams: Promise<{ session_id?: string }> 
+}) {
+  const resolvedParams = await searchParams;
+  const sessionId = resolvedParams.session_id;
+
+  if (!sessionId) {
+    return (
+      <div className="bg-gray-50 py-30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-red-600 mb-4">Invalid Page</h1>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-gray-50 py-30">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <CheckoutStatus sessionId={sessionId} />
+      </div>
+    </div>
+  );
 }
