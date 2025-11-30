@@ -89,7 +89,7 @@ export default function CheckoutStatus({sessionId}: {sessionId: string | null}) 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         { errorMessage && (
           <div className="text-center mb-12">
-            <h3 className="text-2xl font-bold text-red-600 mb-4">{errorMessage}</h3>
+            <h3 className="text-2xl font-bold text-red-600 mb-4">{errorMessage} </h3>
           </div>
         )}
         { !errorMessage && (
