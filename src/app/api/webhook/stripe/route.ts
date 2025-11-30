@@ -57,13 +57,16 @@ export async function POST(req: NextRequest) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
         const orderId = session.metadata?.orderId;
+        const customerEmail = session.customer_details?.email;
+        const customerName = session.customer_details?.name;
 
         if (orderId && session.payment_status === "paid") {
           await prisma.order.update({
             where: { id: orderId },
             data: {
               status: "paid",
-              stripeSessionId: session.id,
+              customerEmail,
+              customerName,
             },
           });
           console.log(`✅ Order ${orderId} marked as paid`);

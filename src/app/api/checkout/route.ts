@@ -13,7 +13,7 @@ interface CheckoutRequestBody {
   sessionEnd: string;   // ISO date string
 }
 
-// 🧠 POST /api/create-checkout
+// 🧠 POST /api/checkout
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const body: CheckoutRequestBody = await req.json();
@@ -79,6 +79,42 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   } catch (error: unknown) {
     console.error("Stripe checkout error:", error);
+    return new NextResponse(
+      JSON.stringify({ error: "Internal server error" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}
+
+// 🧠 GET /api/checkout?session_id={CHECKOUT_SESSION_ID}
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  try {
+    const { searchParams } = new URL(req.url);
+    const sessionId = searchParams.get("session_id");
+    if (!sessionId) {
+      return new NextResponse(
+        JSON.stringify({ error: "Missing session_id" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    const order_details = await prisma.order.findUnique({
+      where: { stripeSessionId: sessionId },
+    });
+
+    if (!order_details) {
+      return new NextResponse(
+        JSON.stringify({ error: "No booking found with this payment session" }),
+        { status: 404, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    
+    return new NextResponse(
+        JSON.stringify({ order: order_details }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+
+  } catch (error: unknown) {
+    console.error("Stripe session retrieval error:", error);
     return new NextResponse(
       JSON.stringify({ error: "Internal server error" }),
       { status: 500, headers: { "Content-Type": "application/json" } }
