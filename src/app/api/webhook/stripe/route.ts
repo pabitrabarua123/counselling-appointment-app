@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { PrismaClient } from "@prisma/client";
+import { sendEmailCustomer } from "@/lib/emailService";
 
 const prisma = new PrismaClient();
 
@@ -96,10 +97,17 @@ export async function POST(req: NextRequest) {
               endTime: order_details?.sessionEnd.toISOString(),
             }),
           }).then(res => {
-
-          // send confirmation email
-          //
-        })
+            console.log("Event created in Google Calendar:", res.status);
+            sendEmailCustomer({
+              userEmail: order_details?.customerEmail || "",
+              userName: order_details?.customerName || "",
+              therapistName: order_details?.therapist.name || "",
+              sessionDate: order_details?.sessionStart.toDateString() || "",
+              sessionTime: order_details?.sessionStart.toTimeString().split(" ")[0] || "",
+            });
+          }).catch(err => {
+            console.error("Error creating event in Google Calendar:", err);
+          });
       }
     }
         break;
