@@ -44,7 +44,7 @@ const endTime = `${bookingData.sessionDate}T${(parseInt(bookingData.sessionTime)
   const handlePayment = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/create-checkout', {
+      const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

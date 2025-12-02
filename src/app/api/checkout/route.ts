@@ -99,6 +99,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     }
     const order_details = await prisma.order.findUnique({
       where: { stripeSessionId: sessionId },
+      include: {
+        therapist: {
+          select: {
+            name: true,
+            email: true
+          },
+        },
+      },
     });
 
     if (!order_details) {

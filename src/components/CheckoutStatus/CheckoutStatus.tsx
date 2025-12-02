@@ -28,7 +28,7 @@ export default function CheckoutStatus({sessionId}: {sessionId: string | null}) 
             setErrorMessage(data.error);
          }
          if(data.order && data.order.status !== 'paid') {
-            setErrorMessage("Payment not completed yet, we're working on it!");
+            setErrorMessage("Payment not completed yet, once confirmed, you'll receive a confirmation email shortly.");
          }
          if(data.order && data.order.status === 'paid') {
           setSessionDetails({
@@ -36,7 +36,7 @@ export default function CheckoutStatus({sessionId}: {sessionId: string | null}) 
             serviceType: data.order.serviceType,
             sessionStart: new Date(data.order.sessionStart),
             sessionEnd: new Date(data.order.sessionEnd),
-            therapistName: data.order.therapistName,
+            therapistName: data.order.therapist.name,
             customerName: data.order.customerName,
           });
          }
@@ -93,14 +93,50 @@ export default function CheckoutStatus({sessionId}: {sessionId: string | null}) 
           </div>
         )}
         { !errorMessage && (
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Payment Successful!  
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Thank you, {sessionDetails?.customerName}! Your payment for the {sessionDetails?.serviceType} session with {sessionDetails?.therapistName} has been successfully processed. Your session is scheduled from {sessionDetails?.sessionStart.toLocaleString()} to {sessionDetails?.sessionEnd.toLocaleString()}. We look forward to seeing you then!
-          </p>
-        </div>
+<div className="text-center mb-12">
+  <h1 className="text-4xl font-bold text-green-600 mb-4">
+    🎉 Payment Successful!
+  </h1>
+
+  <p className="text-xl text-gray-700 max-w-3xl mx-auto mb-8">
+    Thank you, <span className="font-semibold">{sessionDetails?.customerName}</span>! 
+    Your payment for the <span className="font-semibold">{sessionDetails?.serviceType}</span> session 
+    with <span className="font-semibold">{sessionDetails?.therapistName}</span> has been confirmed. Below are your session details:
+  </p>
+
+  <div className="max-w-3xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
+    <table className="min-w-full text-left">
+      <tbody className="divide-y divide-gray-200">
+        <tr className="hover:bg-gray-50 transition">
+          <td className="px-8 py-4 font-semibold text-gray-800 bg-gray-50">Therapist Name</td>
+          <td className="px-8 py-4 text-gray-700">{sessionDetails?.therapistName}</td>
+        </tr>
+        <tr className="hover:bg-gray-50 transition">
+          <td className="px-8 py-4 font-semibold text-gray-800 bg-gray-50">Counselling Type</td>
+          <td className="px-8 py-4 text-gray-700">{sessionDetails?.serviceType}</td>
+        </tr>
+        <tr className="hover:bg-gray-50 transition">
+          <td className="px-8 py-4 font-semibold text-gray-800 bg-gray-50">Session Start</td>
+          <td className="px-8 py-4 text-gray-700">
+            {sessionDetails?.sessionStart.toLocaleString()}
+          </td>
+        </tr>
+        <tr className="hover:bg-gray-50 transition">
+          <td className="px-8 py-4 font-semibold text-gray-800 bg-gray-50">Session End</td>
+          <td className="px-8 py-4 text-gray-700">
+            {sessionDetails?.sessionEnd.toLocaleString()}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p className="text-lg text-gray-600 mt-8">
+    We look forward to seeing you at the scheduled time.  
+    If you have any questions, feel free to reach out!
+  </p>
+</div>
+
         )}
         </div>
         </div>
