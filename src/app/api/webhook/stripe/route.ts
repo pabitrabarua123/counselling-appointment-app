@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
 
           // other business logic (e.g., send confirmation email) can go here
           // event update
-          fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/events`, {
+          fetch(`${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/events`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
