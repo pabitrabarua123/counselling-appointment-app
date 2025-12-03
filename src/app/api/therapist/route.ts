@@ -15,7 +15,8 @@ export async function GET(request: NextRequest) {
                 user: {
                     select: {
                         name: true,
-                        email: true
+                        email: true,
+                        avatar: true
                     }
                 }
             }
@@ -28,7 +29,8 @@ export async function GET(request: NextRequest) {
         user: {
           select: {
             name: true,
-            email: true
+            email: true,
+            avatar: true
           }
         }
       }

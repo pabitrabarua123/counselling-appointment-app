@@ -5,9 +5,10 @@ import { Zap, Users, AlertTriangle, Moon, Shield, Frown, Briefcase, HelpCircle }
 import { Therapist, User } from '@prisma/client';
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
+import Image from 'next/image';
 
 type TherapistWithUser = Therapist & {
-  user: Pick<User, 'name' | 'email'>;
+  user: Pick<User, 'name' | 'email' | 'avatar'>;
 };
 
 interface Slot {
@@ -249,7 +250,18 @@ function formatTime24To12(time: string) {
                   onClick={() => updateBookingData({ therapistId: therapist.userId })}
                 >
                   <div className="text-center">
-                    <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4"></div>
+                    <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4">
+                      { therapist.user.avatar ? (
+  <Image
+    width={200}
+    height={200}
+    src={therapist.user.avatar as string}
+    alt={therapist.user.name || 'Therapist Avatar'}
+    className="w-20 h-20 rounded-full object-cover"
+  />
+) : null }
+
+                    </div>
                     <h4 className="text-lg font-semibold text-gray-900">{therapist.user.name}</h4>
                     <p className="text-blue-600 font-medium">{therapist.area}</p>
                     <p className="text-gray-600 text-sm">{therapist.yearOfExp} experience</p>
