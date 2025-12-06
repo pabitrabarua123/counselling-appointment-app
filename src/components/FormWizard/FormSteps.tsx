@@ -6,6 +6,7 @@ import { Therapist, User } from '@prisma/client';
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import Image from 'next/image';
+import { TherapistPopup } from './TherapistPopup';
 
 type TherapistWithUser = Therapist & {
   user: Pick<User, 'name' | 'email' | 'avatar'>;
@@ -53,6 +54,8 @@ function formatTime24To12(time: string) {
       };
       fetchTherapists();
     }, []);
+
+    const [showTherapistPopup, setShowTherapistPopup] = useState({status: false, details: null as TherapistWithUser | null});
 
     const [slots, setSlots] = useState<Slot[]>([]); 
     useEffect(() => {
@@ -236,44 +239,72 @@ function formatTime24To12(time: string) {
 
       case 7:
         return (
+          <>
           <div className="space-y-6">
             <h3 className="text-2xl font-semibold text-gray-900 mb-6">Choose Your Therapist</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {therapists.map((therapist) => (
                 <div
                   key={therapist.id}
-                  className={`p-6 border-2 rounded-lg cursor-pointer transition-all ${
+                  className={`p-6 border-2 rounded-lg transition-all ${
                     bookingData.therapistId === therapist.userId
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
-                  onClick={() => updateBookingData({ therapistId: therapist.userId })}
                 >
                   <div className="text-center">
                     <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4">
                       { therapist.user.avatar ? (
-  <Image
-    width={200}
-    height={200}
-    src={therapist.user.avatar as string}
-    alt={therapist.user.name || 'Therapist Avatar'}
-    className="w-20 h-20 rounded-full object-cover"
-  />
-) : null }
-
+                        <Image
+                          width={200}
+                          height={200}
+                          src={therapist.user.avatar}
+                          alt={therapist.user.name || 'Therapist Avatar'}
+                          className="w-20 h-20 rounded-full object-cover cursor-pointer"
+                          onClick={() => setShowTherapistPopup({status: true, details: therapist})}
+                        />
+                       ) : null }
                     </div>
-                    <h4 className="text-lg font-semibold text-gray-900">{therapist.user.name}</h4>
+                    <h4 
+                      className="text-lg font-semibold text-gray-900 cursor-pointer" 
+                      onClick={() => setShowTherapistPopup({status: true, details: therapist})}
+                    >
+                      {therapist.user.name}
+                    </h4>
                     <p className="text-blue-600 font-medium">{therapist.area}</p>
                     <p className="text-gray-600 text-sm">{therapist.yearOfExp} experience</p>
                     <div className="flex items-center justify-center mt-2">
-                      <span className="text-yellow-400">★</span>
-                      <span className="ml-1 text-sm text-gray-600">{therapist.rating}</span>
+                      { [1,2,3,4,5].map((star) => (
+                        <span key={star} className={`text-xl ${(therapist.rating ?? 0) >= star ? 'text-yellow-400' : 'text-gray-300'}`}>★</span>
+                      )) }
                     </div>
+                    <button
+                      className={`mt-4 px-4 py-2 rounded-md font-medium transition-all ${
+                        bookingData.therapistId === therapist.userId
+                          ? 'bg-blue-600 text-white cursor-pointer'
+                          : 'bg-[#85e8ff] text-black cursor-pointer'
+                      }`}
+                      onClick={() => updateBookingData({ therapistId: therapist.userId })}
+                    >
+                      {bookingData.therapistId === therapist.userId ? '✓ Selected' : 'Select'}
+                    </button>
                   </div>
                 </div>
+                
               ))}
             </div>
           </div>
+          { showTherapistPopup.status && (
+            <TherapistPopup
+              name={showTherapistPopup.details?.user.name || ''}
+              degree={showTherapistPopup.details?.degree || ''}
+              about={showTherapistPopup.details?.aboutTherapist || ''}
+              experience={showTherapistPopup.details?.yearOfExp || 0}
+              area={showTherapistPopup.details?.area || ''}
+              onClose={() => setShowTherapistPopup({status: false, details: null})}
+            />
+          ) }
+          </>
         )
 
       case 8:

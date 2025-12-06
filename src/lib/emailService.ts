@@ -26,97 +26,101 @@ export const sendEmailCustomer = async (data: EmailData) => {
   
   const { userEmail, userName, therapistName, sessionDate, sessionTime } = data;
 
-  const mailOptions = {
-    from: `"TalkCure" <${process.env.BREVO_VERIFIED_SENDER}>`,
-    to: userEmail,
-    subject: `Session Booking Confirmed`,
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;">
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
-          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: bold;">
-            🎉 Congratulations!
-          </h1>
-          <p style="color: #d1fae5; margin: 10px 0 0 0; font-size: 16px;">
-            Your website ownership has been approved
-          </p>
+const mailOptions = {
+  from: `"TalkCure" <${process.env.BREVO_VERIFIED_SENDER}>`,
+  to: userEmail,
+  subject: `Online Counselling Session Confirmed`,
+  html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+      <!-- Header -->
+      <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 28px; font-weight: bold;">
+          🎉 Session Booked Successfully!
+        </h1>
+        <p style="color: #d1fae5; margin: 10px 0 0 0; font-size: 16px;">
+          Your online counselling session has been confirmed
+        </p>
+      </div>
+
+      <!-- Main Content -->
+      <div style="padding: 40px 30px; background-color: #ffffff;">
+        <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
+          Hi <strong>${userName}</strong>,
+        </p>
+        
+        <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">
+          Thank you for choosing TalkCure. We are happy to let you know that your counselling session has been successfully scheduled.
+        </p>
+
+        <!-- Session Details Card -->
+        <div style="background-color: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px; margin: 25px 0;">
+          <h3 style="color: #1f2937; margin: 0 0 15px 0; font-size: 18px;">
+            🧠 Session Details
+          </h3>
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold; color: #4b5563; width: 140px;">Therapist:</td>
+              <td style="padding: 8px 0; color: #1f2937;">${therapistName}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Session Date:</td>
+              <td style="padding: 8px 0;">${sessionDate}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Session Time:</td>
+              <td style="padding: 8px 0;">${sessionTime}</td>
+            </tr>
+          </table>
         </div>
 
-        <!-- Main Content -->
-        <div style="padding: 40px 30px; background-color: #ffffff;">
-          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-            Hi <strong>${userName}</strong>,
-          </p>
-          
-          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">
-            Great news! Your ownership claim for  has been successfully approved by our admin team.
-          </p>
-
-          <!-- Website Details Card -->
-          <div style="background-color: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; padding: 25px; margin: 25px 0;">
-            <h3 style="color: #1f2937; margin: 0 0 15px 0; font-size: 18px;">
-              ✅ Verified Website Details
-            </h3>
-            <table style="width: 100%; border-collapse: collapse;">
-              <tr>
-                <td style="padding: 8px 0; font-weight: bold; color: #4b5563; width: 120px;">Therapist:</td>
-                <td style="padding: 8px 0; color: #1f2937;">${therapistName}</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Session Date:</td>
-                <td style="padding: 8px 0;">${sessionDate}</td>
-              </tr>
-              <tr>
-                <td style="padding: 8px 0; font-weight: bold; color: #4b5563;">Session Time:</td>
-                <td style="padding: 8px 0;">${sessionTime}</td>
-              </tr>
-            </table>
-          </div>
-
-          <!-- What's Next Section -->
-          <div style="background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 20px; margin: 25px 0;">
-            <h3 style="color: #1e40af; margin: 0 0 15px 0; font-size: 16px;">
-              🚀 What's Next?
-            </h3>
-            <ul style="color: #374151; margin: 0; padding-left: 20px; line-height: 1.6;">
-              <li style="margin-bottom: 8px;">Your verified status will be displayed publicly</li>
-              <li style="margin-bottom: 8px;">You can now edit the description, ways to earn, tips to earn more, Payout Methods, payment frequency.</li>
-            </ul>
-          </div>
-
-          <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 25px 0 0 0;">
-            Thank you for being part of the Hustleworthy community! If you have any questions, feel free to reach out to our support team.
-          </p>
+        <!-- What's Next Section -->
+        <div style="background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 20px; margin: 25px 0;">
+          <h3 style="color: #1e40af; margin: 0 0 15px 0; font-size: 16px;">
+            ⏳ What’s Next?
+          </h3>
+          <ul style="color: #374151; margin: 0; padding-left: 20px; line-height: 1.6;">
+            <li style="margin-bottom: 8px;">You will receive a reminder and session link 15 minutes before the session.</li>
+            <li style="margin-bottom: 8px;">Please ensure a quiet and private space for the session.</li>
+            <li style="margin-bottom: 8px;">For any changes or rescheduling, contact support at least 6 hours before the session.</li>
+          </ul>
         </div>
 
-        <!-- Footer -->
-        <div style="background-color: #f9fafb; padding: 25px 30px; border-radius: 0 0 8px 8px; text-align: center; border-top: 1px solid #e5e7eb;">
-          <p style="color: #6b7280; font-size: 14px; margin: 0 0 10px 0;">
-            Best regards,<br>
-            <strong style="color: #374151;">The Hustleworthy Team</strong>
+        <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 25px 0 0 0;">
+          If you need help, feel free to reach us anytime. We are here to support you.
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div style="background-color: #f9fafb; padding: 25px 30px; border-radius: 0 0 8px 8px; text-align: center; border-top: 1px solid #e5e7eb;">
+        <p style="color: #6b7280; font-size: 14px; margin: 0 0 10px 0;">
+          Warm regards,<br>
+          <strong style="color: #374151;">The TalkCure Team</strong>
+        </p>
+        
+        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">
+            This email was sent to ${userEmail}. For support, contact us anytime.
           </p>
-          
-          <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-            <p style="color: #9ca3af; font-size: 12px; margin: 0;">
-              This email was sent to ${userEmail}. If you have any questions, please contact our support team.
-            </p>
-          </div>
         </div>
       </div>
-    `,
-    text: `
-Congratulations ${userName}!
+    </div>
+  `,
+  text: `
+Hi ${userName},
 
-Your ownership claim for has been successfully approved by our admin team.
+Your counselling session has been confirmed.
 
-Website Details:
-- Website: test
-- Status: ✓ Verified Owner
+Session Details:
+Therapist: ${therapistName}
+Date: ${sessionDate}
+Time: ${sessionTime}
 
-Best regards,
+You will receive a reminder before the session.
+
+Warm regards,
 TalkCure Team
-    `
-  };
+  `
+};
 
   try {
     const info = await transporter.sendMail(mailOptions);
