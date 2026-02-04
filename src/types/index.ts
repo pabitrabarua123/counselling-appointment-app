@@ -38,6 +38,15 @@ export interface Preferences {
   emergencyContact: string
 }
 
+export type TabItem = {
+  id: number;
+  name: string;
+  image: string;
+  degree: string;
+  areas: string[];
+  description: string;
+};
+
 export interface BookingData {
   step: number
   // Step 1: Service type

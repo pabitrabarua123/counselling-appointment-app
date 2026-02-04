@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { Heart, Calendar, User, Home } from 'lucide-react'
 import { useSession } from 'next-auth/react'
@@ -11,13 +12,24 @@ const Navigation = () => {
   const { data: session } = useSession()
 
   const navItems = [
-    { href: '/', label: 'Home', icon: Home },
-    { href: '/therapists', label: 'Therapists', icon: User },
-    { href: '/book', label: 'Book Session', icon: Calendar },
+    { href: '', label: 'Home' },
+    { href: '#about', label: 'About' },
+    { href: '#therapists', label: 'My Therapists' },
+    { href: '/book', label: 'How It Works' },
   ]
 
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <nav className="bg-white shadow-sm border-b">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-gradient-to-b from-[#f6feff] to-[#e8f1f9] shadow-soft" : "bg-transparent"}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
@@ -27,9 +39,8 @@ const Navigation = () => {
             </Link>
           </div>
           
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center space-x-5">
             {navItems.map((item) => {
-              const Icon = item.icon
               const isActive = pathname === item.href
               
               return (
@@ -42,7 +53,6 @@ const Navigation = () => {
                       : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
                   }`}
                 >
-                  <Icon className="h-4 w-4" />
                   <span>{item.label}</span>
                 </Link>
               )
@@ -54,6 +64,12 @@ const Navigation = () => {
              >
                <span>Logout</span>
              </button>}
+          </div>
+          <div className="flex items-center">
+            <Link href="/" className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all duration-300 ease-out cursor-pointer bg-gradient text-white hover:-translate-y-1 h-10 rounded-xl px-5 w-full group sm:w-auto">
+              <Calendar className="h-4 w-4 text-white" />
+              <span className="text-sm font-medium">Book Assesment</span>
+            </Link>
           </div>
         </div>
       </div>
