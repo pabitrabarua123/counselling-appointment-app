@@ -44,6 +44,7 @@ export type TabItem = {
   image: string;
   degree: string;
   areas: string[];
+  languages: string[];
   description: string;
 };
 

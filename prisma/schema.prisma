@@ -31,6 +31,7 @@ model Therapist {
   degree            String?
   area              String?
   yearOfExp         Int?
+  languages         String[]
   aboutTherapist    String?
   rating            Int?
   googleCalendarId  String?
