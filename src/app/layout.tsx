@@ -4,6 +4,7 @@ import AuthProvider from '@/components/providers/AuthProvider'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import { Outfit } from 'next/font/google'
+import ReactQueryProvider from '@/components/providers/ReactQueryProvider'
 
 const outfit = Outfit({ subsets: ['latin'] })
 
@@ -21,9 +22,11 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className={outfit.className}>
         <AuthProvider>
-          <Navigation/>
-          {children}
-          <Footer/>
+          <ReactQueryProvider>
+            <Navigation/>
+            {children}
+            <Footer/>
+          </ReactQueryProvider>
         </AuthProvider>
       </body>
     </html>

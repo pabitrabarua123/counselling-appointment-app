@@ -7,8 +7,10 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("id");
+    console.log("[THERAPIST_API] GET request received", { url: request.url, userId });
 
     if (userId) {
+        console.log("[THERAPIST_API] Fetching therapist by userId", userId);
         const therapist = await prisma.therapist.findUnique({
             where: { userId },
             include: {
@@ -24,6 +26,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(therapist);
     }
 
+    console.log("[THERAPIST_API] Fetching all therapists");
     const therapists = await prisma.therapist.findMany({
       include: {
         user: {

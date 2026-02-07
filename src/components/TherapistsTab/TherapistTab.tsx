@@ -6,23 +6,64 @@ import Image from "next/image";
 import { GraduationCap, Languages, Heart, Clock, ArrowRight } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query"
 
-type CarouselProps = {
-  data: TabItem[];
-};
+type TherapistApiResponse = {
+  id: number
+  degree: string
+  area: string[]
+  languages: string[]
+  aboutTherapist: string
+  user: {
+    name: string
+    avatar: string
+  }
+}
 
-const TherapistsTab = ({ data } : CarouselProps) => {
+const TherapistsTab = () => {
+  console.log("Rendering TherapistsTab component...");
+   const { isLoading, error, data: therapists } = useQuery<TabItem[]>({
+     queryKey: ['therapists'],
+     queryFn: async () => {
+      console.log("Fetching therapists...");
+       const response = await fetch('/api/therapist');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+       }
+       const data: TherapistApiResponse[] = await response.json();
+       return data.map((therapist) => {
+          return {
+            id: therapist.id,
+            name: therapist.user.name,
+            image: therapist.user.avatar,
+            degree: therapist.degree,
+            area: therapist.area,
+            languages: therapist.languages,
+            description: therapist.aboutTherapist,
+          }
+       });
+     },
+     initialData: [],
+   });
+  //console.log(therapists);
+
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   const next = (): void => {
-    setActiveIndex((prev) => (prev + 1) % data.length);
+    if (!therapists || therapists.length === 0) return;
+    setActiveIndex((prev) => (prev + 1) % therapists.length);
   };
 
   const prev = (): void => {
-    setActiveIndex((prev) => (prev - 1 + data.length) % data.length);
+    if (!therapists || therapists.length === 0) return;
+    setActiveIndex((prev) => (prev - 1 + therapists.length) % therapists.length);
   };
 
   const router = useRouter();
+
+  if (isLoading) {
+    return <p className="text-center py-6">Loading therapists...</p>;
+  }
 
   return (
     <div className="w-full max-w-5xl mx-auto">
@@ -36,7 +77,7 @@ const TherapistsTab = ({ data } : CarouselProps) => {
         </button>
 
         <div className="flex gap-2">
-          {data.map((_, index) => (
+          {therapists.map((_, index) => (
             <button
               key={index}
               onClick={() => setActiveIndex(index)}
@@ -59,7 +100,7 @@ const TherapistsTab = ({ data } : CarouselProps) => {
 
       {/* Fade Container */}
       <div className="relative h-[670px]">
-        {data.map((item, index) => (
+        {therapists.map((item, index) => (
           <div
             key={item.id}
             className={`
@@ -95,12 +136,12 @@ const TherapistsTab = ({ data } : CarouselProps) => {
         <div className="pt-4">
             <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-3">Area Of Expertise</h4>
             <div className="flex flex-wrap gap-3">
-              { item.areas.map((area, idx) => (
+              { item.area.map((ar, idx) => (
                 <div 
                   className="flex items-center gap-2 bg-light text-secondary px-4 py-2 rounded-full text-sm font-medium"
                   key={idx}>
                   <GraduationCap className="h-4 w-4"/>
-                   {area}
+                   {ar}
                 </div>
               ))
             }

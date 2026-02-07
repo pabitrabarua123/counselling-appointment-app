@@ -5,6 +5,8 @@ import { ArrowRight, BadgeCheck, Calendar, ShieldCheck, Users } from "lucide-rea
 import Button from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 import RatingCard from "../ui/RatingCard";
+import { useQuery } from "@tanstack/react-query"
+import { TabItem } from "@/types";
 
 export default function Hero() {
     const router = useRouter();

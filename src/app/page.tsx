@@ -1,9 +1,6 @@
-import Link from 'next/link'
-import { Heart, Calendar, Users, Shield, Clock, ShieldCheck, BadgeCheck, ArrowRight, Languages, BadgeDollarSign } from 'lucide-react'
-import Image from 'next/image';
-import RatingCard from '@/components/ui/RatingCard';
+import Link from 'next/link';
+import { Calendar, Users, Shield, Clock } from 'lucide-react';
 import TherapistTab from '@/components/TherapistsTab/TherapistTab';
-import { TABS } from '@/components/TherapistsTab/TABS';
 import Hero from '@/components/Home/Hero';
 import About from '@/components/Home/About';
 import Pricing from '@/components/Home/Pricing';
@@ -77,7 +74,7 @@ export default function Home() {
            <h2 className="text-5xl font-bold text-black text-center mb-15">
             Guiding Your Healing
           </h2>
-          <TherapistTab data={TABS} />
+          <TherapistTab />
         </div>
       </section>
 
