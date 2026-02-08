@@ -300,7 +300,7 @@ function formatTime24To12(time: string) {
               degree={showTherapistPopup.details?.degree || ''}
               about={showTherapistPopup.details?.aboutTherapist || ''}
               experience={showTherapistPopup.details?.yearOfExp || 0}
-              area={showTherapistPopup.details?.area || ''}
+              area={showTherapistPopup.details?.area || []}
               onClose={() => setShowTherapistPopup({status: false, details: null})}
             />
           ) }
