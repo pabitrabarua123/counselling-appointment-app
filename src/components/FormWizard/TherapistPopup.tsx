@@ -3,7 +3,7 @@ interface TherapistPopupProps {
   degree: string;
   about: string;
   experience: number;
-  area: string;
+  area: string[];
   onClose: () => void; // Add close handler
 }
 
@@ -31,7 +31,7 @@ export const TherapistPopup = ({
 
       <div className="border-t border-gray-400 pt-4 space-y-2">
         <p className="text-gray-700">
-          <span className="font-semibold">Area of Expertise:</span> {area}
+          <span className="font-semibold">Area of Expertise:</span> {area.map((a) => a).join(', ')}
         </p>
 
         <p className="text-gray-700">
