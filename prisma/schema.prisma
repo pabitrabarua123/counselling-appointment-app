@@ -35,6 +35,7 @@ model Therapist {
   aboutTherapist    String?
   rating            Int?
   googleCalendarId  String?
+  isVerified        Boolean    @default(false)
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
 }

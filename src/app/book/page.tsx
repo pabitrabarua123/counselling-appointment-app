@@ -1,5 +1,7 @@
 import FormWizard from '@/components/FormWizard'
 import { Metadata } from 'next'
+import Navigation from '@/components/Navigation'
+import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
   title: 'Book a Session',
@@ -8,6 +10,11 @@ export const metadata: Metadata = {
 
 export default function BookPage() {
   return (
-    <FormWizard />
+    <>
+      <Navigation/>
+      <FormWizard />
+      <Footer/>
+    </>
+    
   )
 }

@@ -4,6 +4,13 @@ import TherapistTab from '@/components/TherapistsTab/TherapistTab';
 import Hero from '@/components/Home/Hero';
 import About from '@/components/Home/About';
 import Pricing from '@/components/Home/Pricing';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
+
+export const metadata = {
+  title: 'TalkCure - Online Psychotherapy Booking',
+  description: 'Book online psychotherapy sessions with qualified therapists',
+}
 
 export default function Home() {
   const features = [
@@ -31,6 +38,7 @@ export default function Home() {
 
   return (
     <div className="">
+      <Navigation/>
       <Hero />
       <About />
 
@@ -97,6 +105,7 @@ export default function Home() {
           </Link>
         </div>
       </section>
+      <Footer/>
     </div>
   )
 }

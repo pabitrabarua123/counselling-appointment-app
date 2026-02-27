@@ -68,7 +68,7 @@ export default function FormWizard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 mt-[65px] py-20">
       <div className="max-w-4xl mx-auto shadow-lg rounded-lg bg-white">
         {/* Thin Progress Bar */}
         <div className="mb-6">

@@ -6,16 +6,17 @@ import { usePathname } from 'next/navigation'
 import { Heart, Calendar, User, Home } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { signOut } from 'next-auth/react'
+import Image from 'next/image'
 
 const Navigation = () => {
   const pathname = usePathname()
   const { data: session } = useSession()
 
   const navItems = [
-    { href: '', label: 'Home' },
-    { href: '#about', label: 'About' },
-    { href: '#therapists', label: 'My Therapists' },
-    { href: '/book', label: 'How It Works' },
+    { href: '/', label: 'Home' },
+    { href: '/#about', label: 'About' },
+    { href: '/#therapists', label: 'My Therapists' },
+    { href: '/#how-it-works', label: 'How It Works' },
   ]
 
   const [scrolled, setScrolled] = useState(false);
@@ -34,7 +35,13 @@ const Navigation = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <Heart className="h-8 w-8 text-blue-600" />
+              <Image 
+                src="/logo.png"
+                alt='TalkCure Logo'
+                width={40}
+                height={40}
+                className="w-10 h-10"
+              />
               <span className="text-xl font-bold text-gray-900">TalkCure</span>
             </Link>
           </div>
@@ -57,13 +64,6 @@ const Navigation = () => {
                 </Link>
               )
             })}
-            {session?.user && 
-             <button 
-               onClick={() => signOut({ callbackUrl: '/auth/signin' })}
-               className="flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium border-2 border-blue-400 cursor-pointer text-blue-600 hover:bg-blue-50 transition-colors duration-200"
-             >
-               <span>Logout</span>
-             </button>}
           </div>
           <div className="flex items-center">
             <Link href="/" className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all duration-300 ease-out cursor-pointer bg-gradient text-white hover:-translate-y-1 h-10 rounded-xl px-5 w-full group sm:w-auto">

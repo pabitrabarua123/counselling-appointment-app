@@ -14,6 +14,9 @@
   .text-theme {
     color: var(--primary);
   }
+  .text-theme-dark {
+    color: var(--secondary);
+  }
   .text-black {
     color: var(--foreground);
   }
@@ -123,4 +126,14 @@
     .container {
         max-width: 1400px;
     }
+}
+
+/* Hide scrollbar but allow scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }

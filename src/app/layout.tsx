@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import AuthProvider from '@/components/providers/AuthProvider'
-import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import { Outfit } from 'next/font/google'
 import ReactQueryProvider from '@/components/providers/ReactQueryProvider'
@@ -23,9 +22,7 @@ export default function RootLayout({
       <body className={outfit.className}>
         <AuthProvider>
           <ReactQueryProvider>
-            <Navigation/>
             {children}
-            <Footer/>
           </ReactQueryProvider>
         </AuthProvider>
       </body>
