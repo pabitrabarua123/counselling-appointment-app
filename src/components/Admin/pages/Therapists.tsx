@@ -5,7 +5,6 @@ import MonthlySalesChart from "../ecommerce/MonthlySalesChart";
 import StatisticsChart from "../ecommerce/StatisticsChart";
 import MonthlyTarget from "../ecommerce/MonthlyTarget";
 import RecentOrders from "../ecommerce/RecentOrders";
-import DemographicCard from "../ecommerce/DemographicCard";
 
 export default function Therapists() {
   return (
