@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 import AppSidebar from "@/components/Admin/AppSidebar";
