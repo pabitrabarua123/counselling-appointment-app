@@ -5,13 +5,11 @@ export const metadata = {
 };
 
 type Props = {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 };
 
-export default function AdminClientDetails({ params }: Props) {
-  const { id } = params;
+export default async function AdminClientDetails({ params }: Props) {
+  const { id } = await params;
 
   return (
     <div>
