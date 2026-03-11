@@ -5,9 +5,7 @@ export const metadata = {
 };
 
 type Props = {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>
 };
 
 export default async function AdminTherapistDetails({ params }: Props) {
