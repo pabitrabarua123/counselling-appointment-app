@@ -17,11 +17,16 @@ export default async function AdminLayout({
   children: ReactNode;
 }) {
   const session = await getServerSession(authOptions);
+  console.log("AdminLayout session:", session);
 
   if (!session) {
     redirect(
       `/api/auth/signin?callbackUrl=${encodeURIComponent("/admin")}`
     );
+  }
+
+  if (session.user.role !== 1) {
+    redirect("/unauthorized");
   }
 
   return (

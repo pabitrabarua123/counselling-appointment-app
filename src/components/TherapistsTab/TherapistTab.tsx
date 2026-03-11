@@ -14,9 +14,9 @@ type TherapistApiResponse = {
   area: string[]
   languages: string[]
   aboutTherapist: string
+  profilePic: string
   user: {
     name: string
-    avatar: string
   }
 }
 
@@ -35,7 +35,7 @@ const TherapistsTab = () => {
           return {
             id: therapist.id,
             name: therapist.user.name,
-            image: therapist.user.avatar,
+            image: therapist.profilePic,
             degree: therapist.degree,
             area: therapist.area,
             languages: therapist.languages,

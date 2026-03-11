@@ -11,121 +11,99 @@ import PageBreadcrumb from "../common/PageBreadCrumb";
 import Badge from "../ui/badge/Badge";
 import Button from "../ui/button/Button";
 import Image from "next/image";
+import { useQuery } from "@tanstack/react-query";
 import ComponentCardTable from "../common/ComponentCardTable";
-import { Pencil, SquarePen, Star } from "lucide-react";
-import { Therapist } from "@/types";
+import { useRouter } from "next/navigation";
+import { Client } from "@/types";
 
 type Filters = {
-  area: string;
-  rating: number | null;
-  gender: string;
-  languages: string;
+  therapistId: string;
+  sessionType: string;
+  startDate: string;
+  endDate: string;
 };
 
-export default function Therapists() {
-  const [data, setData] = useState<Therapist[]>([]);
+export default function Clients() {
+  const [data, setData] = useState<Client[]>([]);
   const [page, setPage] = useState(1);
   const limit = 5;
 
+  const router = useRouter();
+
   const [showFilter, setShowFilter] = useState(false);
   const [filters, setFilters] = useState<Filters>({
-    area: "",
-    rating: null,
-    gender: "",
-    languages: "",
+    therapistId: "",
+    sessionType: "",
+    startDate: "",
+    endDate: "",
   });
   const [appliedFilters, setAppliedFilters] = useState<Filters>(filters)
 
   const [rowCount, setRowCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const columns: ColumnDef<Therapist>[] = [
+  const columns: ColumnDef<Client>[] = [
     {
-      accessorKey: "user.name",
+      accessorKey: "name",
       header: "Name",
       cell: ({ getValue }) => getValue<string>() || "N/A",
     },
     {
-      accessorKey: "area",
-      header: "Area of Expertise",
-      cell: ({ getValue }) => {
-        const areas = getValue<string[]>();
-        return (
-         <div className="flex flex-wrap gap-2">
-          {areas?.map((area, index) => (
-            <Badge key={index} variant="light" color="primary">
-              {area}
-            </Badge>
-          ))}
-         </div>
-       );
-      },
+      accessorKey: "therapist.name",
+      header: "Counsellor",
     },
     {
-  accessorKey: "rating",
-  header: "Rating",
-  cell: ({ getValue }) => {
-    const rating = getValue<number>() || 0;
-
-    return (
-      <div className="flex items-center gap-1">
-        {[...Array(5)].map((_, i) => (
-          <Star
-            key={i}
-            size={16}
-            className={i < rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
-          />
-        ))}
-      </div>
-    );
-  },
-},
+      accessorKey: "sessionType",
+      header: "Session Type",
+    },
     {
       id: "actions",
       header: "Action",
       cell: ({ row }) => (
-      <div className="flex gap-2">
        <button
          className="px-3 py-1.5 text-xs font-medium text-secondary bg-light rounded-md cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 flex items-center gap-1"
          onClick={() => {
-            window.open(`/admin/therapists/${row.original.user.id}`, "_blank");
+           window.open(`/admin/clients/${row.original.id}`, "_blank");
          }}
         >
          Details
        </button>
-       <button
-         className="px-3 py-1.5 text-xs font-medium text-secondary bg-[#e0d1fc] rounded-md cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 flex items-center gap-1"
-         onClick={() => {
-            window.open(`/admin/therapists/${row.original.user.id}`, "_blank");
-         }}
-        >
-         <Pencil className="w-[12px] h-[12px] mb-[2px]"/> Edit
-       </button>
-      </div>
       ),
     },
   ];
 
-  const fetchTherapists = async (pageNumber: number) => {
+  const fetchTherapists = async () => {
+    const res = await fetch("/api/therapist");
+    const json = await res.json();
+    console.log("Therapists API - Response:", json);
+    return json;
+  };
+
+  const { data: therapistsData } = useQuery({
+    queryKey: ["therapists"],
+    queryFn: fetchTherapists,
+  });
+
+  const fetchClients = async (pageNumber: number) => {
     setLoading(true);
 
     const params = new URLSearchParams({
       page: String(pageNumber),
       limit: String(limit),
-      area: appliedFilters.area,
-      rating: appliedFilters.rating ? String(appliedFilters.rating) : "",
-      gender: appliedFilters.gender,
-      languages: appliedFilters.languages,
+      therapistId: appliedFilters.therapistId,
+      sessionType: appliedFilters.sessionType,
+      startDate: appliedFilters.startDate,
+      endDate: appliedFilters.endDate,
     });
 
-    const res = await fetch(`/api/therapist?${params}`);
+    const res = await fetch(`/api/clients?${params}`);
     const json = await res.json();
-    console.log("Therapists API:", json);
+    console.log("Clients API - Response:", json);
 
     if (pageNumber === 1) {
-      setData(json.therapists);
+      setData(json.data); // replace
     } else {
-      setData((prev) => [...prev, ...json.therapists]);
+      setData((prev) => [...prev, ...json.data]); // append
     }
 
     setRowCount(json.total);
@@ -133,8 +111,8 @@ export default function Therapists() {
   };
 
   useEffect(() => {
-    console.log("Fetching therapists for page:", page);
-    fetchTherapists(page);
+    console.log("Fetching clients for page:", page);
+    fetchClients(page);
   }, [page, appliedFilters]);
 
   const table = useReactTable({
@@ -147,26 +125,26 @@ export default function Therapists() {
 
   const handleExport = async () => {
     const params = new URLSearchParams({
-      area: appliedFilters.area,
-      rating: appliedFilters.rating ? String(appliedFilters.rating) : "",
-      gender: appliedFilters.gender,
-      languages: appliedFilters.languages,
+      therapistId: appliedFilters.therapistId,
+      sessionType: appliedFilters.sessionType,
+      startDate: appliedFilters.startDate,
+      endDate: appliedFilters.endDate,
     });
 
-   const res = await fetch(`/api/therapist/export?${params}`);
+   const res = await fetch(`/api/clients/export?${params}`);
    const blob = await res.blob();
    const url = window.URL.createObjectURL(blob);
 
    const a = document.createElement("a");
    a.href = url;
-   a.download = "therapists.csv";
+   a.download = "clients.csv";
    a.click();
  };
 
   return (
     <div>
-      <PageBreadcrumb pageTitle="Therapists" />
-      <ComponentCardTable title="All Therapists" setShowFilter={setShowFilter} exportData={handleExport}>
+      <PageBreadcrumb pageTitle="Clients" />
+      <ComponentCardTable title="All Clients" setShowFilter={setShowFilter} exportData={handleExport}>
        { data.length !== 0 ? (
           <>
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -187,12 +165,21 @@ export default function Therapists() {
 <tbody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
   {table.getRowModel().rows.map((row) => (
     <tr key={row.id}>
-      {row.getVisibleCells().map((cell) => (
+      {row.getVisibleCells().map((cell, index) => (
         <td
           key={cell.id}
           className="px-5 py-4 sm:px-6 text-start text-sm text-gray-500"
         >
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          {index === 2 ? (
+            <Badge
+              variant="light"
+              color={cell.getValue() === "individual" ? "primary" : "couple"}
+            >
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </Badge>
+          ) : (
+            flexRender(cell.column.columnDef.cell, cell.getContext())
+          )}
         </td>
       ))}
     </tr>
@@ -223,7 +210,7 @@ export default function Therapists() {
        ) : 
        (
           <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[400px]">
-            <Image src="/images/loading.svg" alt="Loading" width={60} height={60} /> Getting therapists...
+            <Image src="/images/loading.svg" alt="Loading" width={60} height={60} /> Getting clients...
           </div>
        )
        }
@@ -235,6 +222,7 @@ export default function Therapists() {
           setFilters={setFilters}
           setShowFilter={setShowFilter}
           setPage={setPage}
+          therapistsData={therapistsData}
           setAppliedFilters={setAppliedFilters}
         />
       )}
@@ -248,18 +236,20 @@ export const FilterModal = ({
   setShowFilter,
   setAppliedFilters,
   setPage,
+  therapistsData,
 }: {
   filters: Filters;
   setFilters: React.Dispatch<React.SetStateAction<Filters>>;
   setShowFilter: React.Dispatch<React.SetStateAction<boolean>>;
   setAppliedFilters: React.Dispatch<React.SetStateAction<Filters>>;
   setPage: React.Dispatch<React.SetStateAction<number>>;
+  therapistsData: { id: string; userId: string; user: { name: string } }[];
 }) => {
     return (
   <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-[99999]">
     <div className="bg-white p-6 rounded-lg w-[420px] shadow-lg relative">    
       <h2 className="text-lg font-semibold mb-4">
-        Filter Therapists
+        Filter Clients
       </h2>
       <span
           className="ml-2 cursor-pointer text-gray-500 hover:text-gray-700 absolute top-3 right-3 text-2xl"
@@ -268,76 +258,65 @@ export const FilterModal = ({
           &times;
       </span>
       <div className="space-y-4">
-
-        {/* Area */}
+        {/* Therapist */}
         <div>
-          <label className="text-sm font-medium">Area of Expertise</label>
+          <label className="text-sm font-medium">Therapist</label>
           <select
             className="w-full border border-gray-400 rounded px-3 py-2 mt-1 text-secondary"
-            value={filters.area}
-            onChange={(e) => setFilters({ ...filters, area: e.target.value })}
+            value={filters.therapistId}
+            onChange={(e) =>
+              setFilters({ ...filters, therapistId: e.target.value })
+            }
           >
-            <option value="">All Areas</option>
-            <option value="Anxiety">Anxiety</option>
-            <option value="Depression">Depression</option>
-            <option value="Stress">Stress</option>
-            <option value="Relationship Issues">Relationship Issues</option>
-            <option value="Trauma">Trauma</option>
-            <option value="Self-esteem">Self-Esteem</option>
-            <option value="Grief and Loss">Grief and Loss</option>
-            <option value="Addiction">Addiction</option>
+            <option value="">All</option> 
+            {therapistsData?.map((therapist) => (
+              <option key={therapist.id} value={therapist.userId}>
+                {therapist.user.name}
+              </option>
+            ))}
           </select>
         </div>
 
-        {/* Gender */}
+        {/* Session Type */}
         <div>
-          <label className="text-sm font-medium">Gender</label>
+          <label className="text-sm font-medium">Session Type</label>
           <select
             className="w-full border border-gray-400 rounded px-3 py-2 mt-1 text-secondary"
-            value={filters.gender}
-            onChange={(e) => setFilters({ ...filters, gender: e.target.value })}
+            value={filters.sessionType}
+            onChange={(e) =>
+              setFilters({ ...filters, sessionType: e.target.value })
+            }
           >
-            <option value="">All Genders</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
+            <option value="">All</option>
+            <option value="individual">Individual</option>
+            <option value="couple">Couple</option>
           </select>
         </div>
 
-        {/* Rating */}
+        {/* Start Date */}
         <div>
-          <label className="text-sm font-medium">Star Rating</label>
-          <select
+          <label className="text-sm font-medium">Start Date</label>
+          <input
+            type="date"
             className="w-full border border-gray-400 rounded px-3 py-2 mt-1 text-secondary"
-            value={filters.rating || ""}
-            onChange={(e) => setFilters({ ...filters, rating: e.target.value ? Number(e.target.value) : null })}
-          >
-            <option value="">All Ratings</option>
-            <option value="1">1 Star & Up</option>
-            <option value="2">2 Stars & Up</option>
-            <option value="3">3 Stars & Up</option>
-            <option value="4">4 Stars & Up</option>
-            <option value="5">5 Stars</option>
-          </select>
+            value={filters.startDate}
+            onChange={(e) =>
+              setFilters({ ...filters, startDate: e.target.value })
+            }
+          />
         </div>
 
-        {/* Language */}
+        {/* End Date */}
         <div>
-          <label className="text-sm font-medium">Language</label>
-          <select
+          <label className="text-sm font-medium">End Date</label>
+          <input
+            type="date"
             className="w-full border border-gray-400 rounded px-3 py-2 mt-1 text-secondary"
-            value={filters.languages}
-            onChange={(e) => setFilters({ ...filters, languages: e.target.value })}
-          >
-            <option value="">All Languages</option>
-            <option value="English">English</option>
-            <option value="Spanish">Spanish</option>
-            <option value="French">French</option>
-            <option value="German">German</option>
-            <option value="Chinese">Chinese</option>
-            <option value="Japanese">Japanese</option>
-            <option value="Hindi">Hindi</option>
-            <option value="Arabic">Arabic</option>
-          </select>
+            value={filters.endDate}
+            onChange={(e) =>
+              setFilters({ ...filters, endDate: e.target.value })
+            }
+          />
         </div>
 
       </div>
@@ -348,17 +327,17 @@ export const FilterModal = ({
           className="px-4 py-2 text-sm bg-gray-200 rounded cursor-pointer hover:bg-gray-300"
           onClick={() => {
   setFilters({
-    area: "",
-    rating: null,
-    gender: "",
-    languages: "",
+    therapistId: "",
+    sessionType: "",
+    startDate: "",
+    endDate: "",
   });
 
   setAppliedFilters({
-    area: "",
-    rating: null,
-    gender: "",
-    languages: "",
+    therapistId: "",
+    sessionType: "",
+    startDate: "",
+    endDate: "",
   });
 
   setPage(1);

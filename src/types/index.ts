@@ -1,20 +1,57 @@
 export interface Therapist {
+  id: string;
+  degree: string;
+  gender: string | null;
+  area: string[];
+  yearOfExp: number;
+  languages: string[];
+  aboutTherapist: string;
+  rating: number;
+  googleCalendarId: string | null;
+  phoneNumber: string | null;
+  profilePic: string | null;
+  userId: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    orders: {
+      id: string;
+      customerName: string;
+  }[]
+  };
+};
+
+export interface Client {
   id: string
-  name: string
-  title: string
-  specialization: string
-  experience: string
-  rating: number
-  reviews: number
-  location: string
+  name: string | null
+  age: string | null
+  gender: string | null
+  issues: string[]
   languages: string[]
-  education: string
-  certifications: string[]
-  bio: string
-  specialties: string[]
-  availability: string
-  image: string
-}
+  sessionType: string
+  phoneNumber: string | null
+  email: string | null
+  therapist: {
+    id: string
+    name: string
+    email: string
+  };
+};
+
+export interface Order {
+  id: string;
+  customerName: string | null;
+  customerEmail: string | null;
+  serviceType: string;
+  sessionStart: string;
+  sessionEnd: string;
+  therapist: {
+    id: string;
+    name: string;
+    email: string;
+  };
+};
 
 export interface SessionType {
   id: string

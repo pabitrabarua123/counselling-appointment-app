@@ -19,6 +19,7 @@ model User {
   avatar        String?
   slot          Slot?
   therapist     Therapist?
+  clients       Client[]
   orders        Order[]
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
@@ -28,6 +29,7 @@ model Therapist {
   id                String     @id @default(cuid())
   user              User       @relation(fields: [userId], references: [id])
   userId            String     @unique
+  gender            String?
   degree            String?
   area              String[]
   yearOfExp         Int?
@@ -35,6 +37,8 @@ model Therapist {
   aboutTherapist    String?
   rating            Int?
   googleCalendarId  String?
+  phoneNumber       String?
+  profilePic        String?
   isVerified        Boolean    @default(false)
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
@@ -42,11 +46,28 @@ model Therapist {
 
 model Slot {
   id            String     @id @default(cuid())
+  days          String[]
   timing        String[]
   user          User       @relation(fields: [userId], references: [id])
   userId        String     @unique
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt   
+}
+
+model Client {
+  id                String     @id @default(cuid())
+  name              String?
+  gender            String
+  issues            String[]
+  age               Int
+  languages         String[]
+  phoneNumber       String
+  email             String?
+  sessionType       String
+  therapist         User       @relation(fields: [therapistId], references: [id])
+  therapistId       String
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 }
 
 model Order {
@@ -64,4 +85,14 @@ model Order {
   customerName     String? 
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+}
+
+model Settings {
+  id                       String    @id @default(cuid())
+  individualCost           String 
+  coupleCost               String
+  stripeWebhookSecret      String
+  googleCalendarApi        String
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
 }

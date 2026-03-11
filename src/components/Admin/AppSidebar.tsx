@@ -17,6 +17,8 @@ import {
   Plug,
   Table,
   UserCircle,
+  Users,
+  Settings,
 } from "lucide-react";
 import Image from "next/image";
 import Logo from "public/logo.png";
@@ -41,63 +43,32 @@ const navItems: NavItem[] = [
   },
   {
     icon: <Calendar />,
+    name: "Session Bookings",
+    path: "/admin/session-bookings",
+  },
+  {
+    icon: <Users />,
+    name: "Clients",
+    path: "/admin/clients",
+  },
+  {
     name: "Calendar",
-    path: "/admin/report",
-  },
-  {
-    icon: <UserCircle />,
-    name: "User Profile",
-    path: "/profile",
-  },
-  {
-    name: "Forms",
-    icon: <List />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <Table />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Pages",
-    icon: <Plug />,
-    subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
-    ],
-  },
+    icon: <Calendar />,
+    path: "/admin/calendar",
+  }
 ];
 
 const othersItems: NavItem[] = [
   {
-    icon: <PieChart />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
+    icon: <Settings />,
+    name: "Settings",
+    path: "/admin/settings",
   },
   {
-    icon: <Box />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
-  {
-    icon: <Plug />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
-    ],
-  },
+    icon: <UserCircle />,
+    name: "Account",
+    path: "/admin/account",
+  }
 ];
 
 const AppSidebar: React.FC = () => {
