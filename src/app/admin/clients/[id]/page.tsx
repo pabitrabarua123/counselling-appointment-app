@@ -10,8 +10,8 @@ type Props = {
   };
 };
 
-export default async function AdminClientDetails({ params }: Props) {
-  const { id } = await params;
+export default function AdminClientDetails({ params }: Props) {
+  const { id } = params;
 
   return (
     <div>
