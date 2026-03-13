@@ -10,7 +10,7 @@ import {
   ColumnDef,
   flexRender
 } from "@tanstack/react-table";
-import ComponentCardTable from "../common/ComponentCardTable";
+import Image from "next/image";
 
 export default function RecentOrders() {
   const router = useRouter();
@@ -87,6 +87,12 @@ export default function RecentOrders() {
         </div>
       </div>
       <div className="max-w-full overflow-x-auto">
+        { data.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[370px]">
+            <Image src="/images/loading.svg" alt="Loading" width={60} height={60} /> Loading sessions...
+          </div>
+        )}
+        { data.length !== 0 && (
         <table border={1} width="100%" className="min-w-full">
                 <thead className="border-b border-gray-100 dark:border-white/[0.05]">
                   {table.getHeaderGroups().map((headerGroup) => (
@@ -124,6 +130,7 @@ export default function RecentOrders() {
           ))}
         </tbody>
         </table>
+        )}
       </div>
     </div>
   );
