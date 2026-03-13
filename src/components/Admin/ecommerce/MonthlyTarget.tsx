@@ -46,7 +46,7 @@ export default function MonthlyTarget() {
     },
     fill: {
       type: "solid",
-      colors: ["#465FFF"],
+      colors: ["#058075"],
     },
     stroke: {
       lineCap: "round",
@@ -74,29 +74,6 @@ export default function MonthlyTarget() {
               Target you’ve set for each month
             </p>
           </div>
-          <div className="relative inline-block">
-            <button className="dropdown-toggle" onClick={toggleDropdown}>
-              {/* <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 size-6" /> */}
-            </button>
-            <Dropdown
-              isOpen={isOpen}
-              onClose={closeDropdown}
-              className="w-40 p-2"
-            >
-              <DropdownItem
-                onItemClick={closeDropdown}
-                className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-              >
-                View More
-              </DropdownItem>
-              <DropdownItem
-                onItemClick={closeDropdown}
-                className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
-              >
-                Delete
-              </DropdownItem>
-            </Dropdown>
-          </div>
         </div>
         <div className="relative ">
           <div className="max-h-[330px]" id="chartDarkStyle">
@@ -112,10 +89,6 @@ export default function MonthlyTarget() {
             +10%
           </span>
         </div>
-        <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
-          You earn $3287 today, its higher than last month. Keep up your good
-          work!
-        </p>
       </div>
 
       <div className="flex items-center justify-center gap-5 px-6 py-3.5 sm:gap-8 sm:py-5">
