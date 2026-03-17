@@ -53,7 +53,7 @@ export default function Testimonial() {
         
         {/* Heading */}
         <div className="text-center mb-16">
-          <span className="inline-block text-theme bg-light font-semibold bg-primary/10 px-4 py-2 mb-3 rounded-full text-sm">Voices of Recovery 1</span>
+          <span className="inline-block text-theme bg-light font-semibold bg-primary/10 px-4 py-2 mb-3 rounded-full text-sm">Voices of Recovery</span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
             Real Experiences, <span className="text-theme">Deep Healing</span>
           </h2>
