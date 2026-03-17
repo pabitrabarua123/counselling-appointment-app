@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma, PrismaClient } from "@prisma/client";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 const prisma = new PrismaClient({
   log: ["query"],
@@ -7,6 +9,15 @@ const prisma = new PrismaClient({
 
 export async function GET(req: NextRequest) {
   try {
+        // Check session
+        const session = await getServerSession(authOptions);
+        if (!session || session.user.role !== 1) {
+          return NextResponse.json(
+            { message: "Unauthorized" },
+            { status: 401 }
+          );
+        }
+
     const { searchParams } = new URL(req.url);
 
     const page = Number(searchParams.get("page") || 1);

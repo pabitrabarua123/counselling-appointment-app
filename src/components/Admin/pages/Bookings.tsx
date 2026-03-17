@@ -186,7 +186,7 @@ export default function Bookings() {
 
 <tbody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
   {table.getRowModel().rows.map((row) => (
-    <tr key={row.id}>
+    <tr key={row.id} className="odd:bg-gray-50 even:bg-white">
       {row.getVisibleCells().map((cell, index) => (
         <td
           key={cell.id}

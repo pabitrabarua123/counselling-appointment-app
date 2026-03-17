@@ -16,7 +16,7 @@ const Navigation = () => {
     { href: '/', label: 'Home' },
     { href: '/#about', label: 'About' },
     { href: '/#therapists', label: 'My Therapists' },
-    { href: '/#how-it-works', label: 'How It Works' },
+    { href: '/#steps', label: 'How It Works' },
   ]
 
   const [scrolled, setScrolled] = useState(false);
@@ -56,8 +56,8 @@ const Navigation = () => {
                   href={item.href}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     isActive
-                      ? 'text-blue-600 bg-blue-50'
-                      : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'
+                      ? 'text-theme'
+                      : 'text-gray-600 hover:text-theme'
                   }`}
                 >
                   <span>{item.label}</span>

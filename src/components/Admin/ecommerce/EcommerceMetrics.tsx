@@ -1,13 +1,34 @@
-// import {
-//   ArrowDownIcon,
-//   ArrowUpIcon,
-//   BoxIconLine,
-//   GroupIcon,
-// } from "../../icons";
+"use client" 
+
 import { CalendarCheck, CircleDollarSign, Stethoscope, Users } from "lucide-react";
 import Badge from "../ui/badge/Badge";
+import { useEffect, useState } from "react";
+import { fetchData } from "next-auth/client/_utils";
+
+type DashboardData = {
+  clients: number,
+  therapists: number,
+  orders: number,
+    revenue: {
+    _sum: {
+      amount: number | null;
+    };
+  };
+}
 
 export default function EcommerceMetrics() {
+
+ const [data, setData] = useState<DashboardData | null>(null);  
+useEffect(() => {
+  async function fetchData() {
+    const res = await fetch("/api/dashboard-data");
+    const result = await res.json();
+    console.log(result)
+    setData(result.data);
+  }
+  fetchData();
+}, []);
+
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
       {/* <!-- Metric Item Start --> */}
@@ -23,7 +44,11 @@ export default function EcommerceMetrics() {
               Clients
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              19
+             {data ? (
+                data.clients
+              ) : (
+                <span className="inline-block w-10 h-5 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></span>
+             )}
             </h4>
           </div>
           <Badge color="success">
@@ -46,7 +71,11 @@ export default function EcommerceMetrics() {
               Therapists
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              5
+             {data ? (
+                data.therapists
+              ) : (
+                <span className="inline-block w-10 h-5 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></span>
+             )}
             </h4>
           </div>
 
@@ -69,7 +98,11 @@ export default function EcommerceMetrics() {
               Session Bookings
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              28
+             {data ? (
+                data.orders
+              ) : (
+                <span className="inline-block w-10 h-5 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></span>
+             )}
             </h4>
           </div>
 
@@ -92,7 +125,11 @@ export default function EcommerceMetrics() {
               Revenue
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              7459 USD
+             {data ? (
+                "$" + data.revenue._sum.amount
+              ) : (
+                <span className="inline-block w-10 h-5 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></span>
+             )}
             </h4>
           </div>
 

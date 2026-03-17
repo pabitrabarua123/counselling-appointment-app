@@ -9,10 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     // Check session
     const session = await getServerSession(authOptions);
-
-    console.log("Session in add-therapist route:", session);
-
-    if (!session || !session.user?.id) {
+    if (!session || session.user.role !== 1) {
       return NextResponse.json(
         { message: "Unauthorized" },
         { status: 401 }

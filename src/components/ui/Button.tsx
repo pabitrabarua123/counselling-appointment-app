@@ -21,6 +21,9 @@ const Button: React.FC<ButtonProps> = ({
     case "outline":
       classExtra = "border-2 border-primary text-secondary font-semibold hover:bg-light transition-colors";
       break;
+    case "outline-full":
+      classExtra = "w-full border-2 border-primary text-secondary font-semibold hover:bg-light transition-colors";
+      break;  
     default:
       classExtra = "bg-blue-600 text-white hover:bg-blue-700";
   }
@@ -37,6 +40,7 @@ const Button: React.FC<ButtonProps> = ({
         font-semibold
         cursor-pointer
         ${classExtra}
+        ${disabled ? "opacity-70 cursor-not-allowed pointer-events-none" : ""}
       `}
     >
       {children}
