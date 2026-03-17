@@ -20,8 +20,8 @@ export default function Steps() {
             <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center mb-2 md:mb-3 mt-1 bg-blue-500/15 text-blue-600">
              <Users />
             </div>
-            <h3 className="text-xs md:text-sm font-heading font-bold mb-1">Choose Your Therapist</h3>
-            <p className="text-[10px] md:text-xs text-secondary leading-relaxed">
+            <h3 className="text-md font-heading font-bold mb-1">Choose Your Therapist</h3>
+            <p className="text-[12px] text-secondary leading-relaxed">
                Explore verified psychologists and find the one that best suits your needs.
             </p>
         </div>
@@ -36,8 +36,8 @@ export default function Steps() {
             <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center mb-2 md:mb-3 mt-1 bg-green-500/15 text-green-600">
               <Calendar />
             </div>
-            <h3 className="text-xs md:text-sm font-heading font-bold mb-1">Confirm Your Time Slot</h3>
-            <p className="text-[10px] md:text-xs text-secondary leading-relaxed">
+            <h3 className="text-md font-heading font-bold mb-1">Confirm Your Time Slot</h3>
+            <p className="text-[12px] md:text-xs text-secondary leading-relaxed">
                 Confirm your time slot and therapist and we’ll handle the rest.
             </p>
         </div>
@@ -52,8 +52,8 @@ export default function Steps() {
             <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center mb-2 md:mb-3 mt-1 bg-amber-500/15 text-amber-600">
                <Shield />
             </div>
-            <h3 className="text-xs md:text-sm font-heading font-bold mb-1">Secure Your Booking</h3>
-            <p className="text-[10px] md:text-xs text-secondary leading-relaxed">
+            <h3 className="text-md font-heading font-bold mb-1">Secure Your Booking</h3>
+            <p className="text-[12px] md:text-xs text-secondary leading-relaxed">
                Lock in your preferred time and therapist in just a few seconds.
             </p>
         </div>
@@ -68,8 +68,8 @@ export default function Steps() {
             <div className="w-9 h-9 md:w-11 md:h-11 rounded-lg flex items-center justify-center mb-2 md:mb-3 mt-1 bg-rose-500/15 text-rose-600">
               <SquareArrowOutUpRight />
             </div>
-            <h3 className="text-xs md:text-sm font-heading font-bold text-foreground mb-1">Start Therapy &amp; Heal</h3>
-            <p className="text-[10px] md:text-xs text-secondary leading-relaxed">
+            <h3 className="text-md font-heading font-bold text-foreground mb-1">Start Therapy &amp; Heal</h3>
+            <p className="text-[12px] md:text-xs text-secondary leading-relaxed">
                 Start your healing journey with a secure and confidential video session.
             </p>
         </div>

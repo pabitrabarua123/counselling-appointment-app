@@ -278,3 +278,9 @@
 .react-calendar {
     border: 1px solid #e2e2e1 !important;
 }
+.swiper-pagination {
+  bottom: 0px !important; /* stays at bottom of padded area */
+}
+.swiper {
+  padding-bottom: 40px !important;
+}

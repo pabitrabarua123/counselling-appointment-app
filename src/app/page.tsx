@@ -6,6 +6,9 @@ import Pricing from '@/components/Home/Pricing';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import Steps from '@/components/Home/Steps';
+import Testimonial from '@/components/Home/Testimonial';
+import Faq from '@/components/Home/Faq';
+import Cta from '@/components/Home/Cta';
 
 export const metadata = {
   title: 'TalkCure - Online Psychotherapy Booking',
@@ -29,26 +32,10 @@ export default function Home() {
           <TherapistTab />
         </div>
       </section>
-
       <Pricing />
-
-      {/* CTA Section */}
-      <section className="bg-blue-600 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Start Your Journey?
-          </h2>
-          <p className="text-blue-100 mb-8 text-lg">
-            Take the first step towards better mental health today.
-          </p>
-          <Link
-            href="/book"
-            className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors inline-block"
-          >
-            Book Your First Session
-          </Link>
-        </div>
-      </section>
+      <Testimonial />
+      <Faq />
+      <Cta /> 
       <Footer/>
     </div>
   )
