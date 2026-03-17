@@ -44,10 +44,7 @@ export default function Faq() {
         
         {/* Heading */}
         <div className="text-center mb-14">
-          <span className="inline-block text-theme font-semibold bg-primary/10 px-4 py-2 mb-3 rounded-full text-sm">
-            FAQs
-          </span>
-
+          <span className="inline-block text-theme bg-light font-semibold bg-primary/10 px-4 py-2 mb-3 rounded-full text-sm">FAQs</span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
             Frequently Asked <span className="text-theme">Questions</span>
           </h2>
