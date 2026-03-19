@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
-// ✅ Stripe requires the raw request body for signature verification
+// Stripe request body for signature verification
 export const config = {
   api: {
     bodyParser: false,
@@ -29,26 +29,12 @@ async function buffer(readable: ReadableStream<Uint8Array>) {
   return Buffer.concat(chunks);
 }
 
-const getAge = (dob: string | Date, currentDate = new Date()) => {
-  const birthDate = new Date(dob);
-
-  let age = currentDate.getFullYear() - birthDate.getFullYear();
-
-  const m = currentDate.getMonth() - birthDate.getMonth();
-
-  if (m < 0 || (m === 0 && currentDate.getDate() < birthDate.getDate())) {
-    age--;
-  }
-
-  return age;
-};
-
 export async function POST(req: NextRequest) {
   const signature = req.headers.get("stripe-signature");
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!signature || !webhookSecret) {
-    console.error("❌ Missing Stripe signature or webhook secret");
+    console.error("Missing Stripe signature or webhook secret");
     return NextResponse.json({ error: "Unauthorized" }, { status: 400 });
   }
 
@@ -62,7 +48,7 @@ export async function POST(req: NextRequest) {
     const rawBody = await buffer(req.body);
     event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
   } catch (err) {
-    console.error("⚠️ Webhook signature verification failed:", err);
+    console.error("Webhook signature verification failed:", err);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
@@ -79,7 +65,8 @@ export async function POST(req: NextRequest) {
         const customerPhone = session.customer_details?.phone;
         
         console.log(bookingData);
-
+        
+        // update payment status
         if (orderId && session.payment_status === "paid") {
           await prisma.order.update({
             where: { id: orderId },
@@ -103,20 +90,39 @@ export async function POST(req: NextRequest) {
              },
           });
 
-          // insert client
-          await prisma.client.create({
-             data: {
+          // add new client if not exists,
+          // increament sessions by 1 if client exists
+          await prisma.client.upsert({
+            where: {
+              email: customerEmail ?? "",
+            },
+            update: {
+               numberOfSessions: {
+               increment: 1,
+              },
+            },
+            create: {
               name: customerName,
               gender: bookingData.genderIdentity,
               issues: bookingData.reason,
-              age: getAge(bookingData.dateOfBirth),
-              languages: ['English', 'Spanish'],
-              phoneNumber: customerPhone ? customerPhone : '',
-              email: customerEmail ? customerEmail : '',
+              age:
+               new Date().getFullYear() -
+               new Date(bookingData.dateOfBirth).getFullYear() -
+                (new Date() <
+                  new Date(
+                   new Date().getFullYear(),
+                   new Date(bookingData.dateOfBirth).getMonth(),
+                   new Date(bookingData.dateOfBirth).getDate()
+                  )
+                ? 1
+              : 0),
+              languages: ["English", "Spanish"],
+              phoneNumber: customerPhone ?? "",
+              email: customerEmail ?? "",
               sessionType: bookingData.serviceType,
               therapistId: bookingData.therapistId,
             },
-          })
+          });
 
           // event update
           fetch(`${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/events`, {
@@ -131,6 +137,7 @@ export async function POST(req: NextRequest) {
             }),
           }).then(res => {
             console.log("Event created in Google Calendar:", res.status);
+            // send email to client and therapist
             sendEmailCustomer({
               userEmail: order_details?.customerEmail || "",
               userName: order_details?.customerName || "",
@@ -145,7 +152,7 @@ export async function POST(req: NextRequest) {
     }
         break;
 
-      // ⚠️ Payment expired or canceled
+      // Payment expired or canceled
       case "checkout.session.expired": {
         const session = event.data.object as Stripe.Checkout.Session;
         const orderId = session.metadata?.orderId;
@@ -155,7 +162,7 @@ export async function POST(req: NextRequest) {
             where: { id: orderId },
             data: { status: "expired" },
           });
-          console.log(`⚠️ Order ${orderId} marked as expired`);
+          console.log(`Order ${orderId} marked as expired`);
         }
         break;
       }
@@ -170,7 +177,7 @@ export async function POST(req: NextRequest) {
             where: { id: orderId },
             data: { status: "failed" },
           });
-          console.log(`❌ Order ${orderId} marked as failed`);
+          console.log(`Order ${orderId} marked as failed`);
         }
         break;
       }
@@ -181,7 +188,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ received: true });
   } catch (err) {
-    console.error("❌ Error handling webhook:", err);
+    console.error("Error handling webhook:", err);
     return NextResponse.json({ error: "Webhook handling failed" }, { status: 500 });
   }
 }
