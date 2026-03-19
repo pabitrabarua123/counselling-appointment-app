@@ -29,6 +29,20 @@ async function buffer(readable: ReadableStream<Uint8Array>) {
   return Buffer.concat(chunks);
 }
 
+const getAge = (dob: string | Date, currentDate = new Date()) => {
+  const birthDate = new Date(dob);
+
+  let age = currentDate.getFullYear() - birthDate.getFullYear();
+
+  const m = currentDate.getMonth() - birthDate.getMonth();
+
+  if (m < 0 || (m === 0 && currentDate.getDate() < birthDate.getDate())) {
+    age--;
+  }
+
+  return age;
+};
+
 export async function POST(req: NextRequest) {
   const signature = req.headers.get("stripe-signature");
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -54,12 +68,17 @@ export async function POST(req: NextRequest) {
 
   try {
     switch (event.type) {
-      // ✅ Payment succeeded
+      // Payment succeeded
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
         const orderId = session.metadata?.orderId;
+        const data = session.metadata?.bookingData;
+        const bookingData = data ? JSON.parse(data) : null;
         const customerEmail = session.customer_details?.email;
         const customerName = session.customer_details?.name;
+        const customerPhone = session.customer_details?.phone;
+        
+        console.log(bookingData);
 
         if (orderId && session.payment_status === "paid") {
           await prisma.order.update({
@@ -70,7 +89,7 @@ export async function POST(req: NextRequest) {
               customerName,
             },
           });
-          console.log(`✅ Order ${orderId} marked as paid`);
+          console.log(`Order ${orderId} marked as paid`);
 
           const order_details = await prisma.order.findUnique({
              where: { id: orderId },
@@ -84,7 +103,21 @@ export async function POST(req: NextRequest) {
              },
           });
 
-          // other business logic (e.g., send confirmation email) can go here
+          // insert client
+          await prisma.client.create({
+             data: {
+              name: customerName,
+              gender: bookingData.genderIdentity,
+              issues: bookingData.reason,
+              age: getAge(bookingData.dateOfBirth),
+              languages: ['English', 'Spanish'],
+              phoneNumber: customerPhone ? customerPhone : '',
+              email: customerEmail ? customerEmail : '',
+              sessionType: bookingData.serviceType,
+              therapistId: bookingData.therapistId,
+            },
+          })
+
           // event update
           fetch(`${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/events`, {
             method: "POST",

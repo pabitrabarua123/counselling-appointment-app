@@ -51,8 +51,7 @@ const endTime = `${bookingData.sessionDate}T${(parseInt(bookingData.sessionTime)
         },
         body: JSON.stringify({
           price: bookingData.serviceType === "couples" ? 2200 : bookingData.serviceType === "individual" ? 1900 : 2800,
-          serviceType: bookingData.serviceType,
-          therapistId: bookingData.therapistId,
+          bookingData: bookingData,
           sessionStart: startTime,
           sessionEnd: endTime,
         }),

@@ -1,25 +1,25 @@
 import Stripe from "stripe";
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { BookingData } from '@/types'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 const prisma = new PrismaClient();
 
 interface CheckoutRequestBody {
   price: number; // amount in cents
-  serviceType: string;
-  therapistId: string;
+  bookingData: BookingData,
   sessionStart: string; // ISO date string
   sessionEnd: string;   // ISO date string
 }
 
-// 🧠 POST /api/checkout
+// POST /api/checkout
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const body: CheckoutRequestBody = await req.json();
-    const { price, serviceType, therapistId, sessionStart, sessionEnd } = body;
+    const { price, bookingData, sessionStart, sessionEnd } = body;
 
-    // ✅ Validate input
+    // Validate input
     if (!price || typeof price !== "number" || price <= 0) {
       return new NextResponse(
         JSON.stringify({ error: "Invalid price" }),
@@ -27,19 +27,19 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // ✅ Create a pending order in your DB
+    // Create a pending order in the DB
     const order = await prisma.order.create({
       data: {
         amount: price,
-        serviceType: serviceType,
-        therapistId: therapistId,
+        serviceType: bookingData.serviceType,
+        therapistId: bookingData.therapistId,
         sessionStart: sessionStart,
         sessionEnd: sessionEnd,
         status: "PENDING",
       },
     });
 
-    // ✅ Create a Stripe Checkout Session (currency fixed on server)
+    // Create a Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
@@ -48,7 +48,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           price_data: {
             currency: "usd", // fixed
             product_data: {
-              name: serviceType || `Order at ${new Date().toISOString()}`,
+              name: bookingData.serviceType || `Order at ${new Date().toISOString()}`,
             },
             unit_amount: price,
           },
@@ -63,6 +63,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       }/checkout/cancel`,
       metadata: {
         orderId: order.id,
+        bookingData: JSON.stringify(bookingData),
       },
     });
 
