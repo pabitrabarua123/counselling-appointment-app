@@ -1,14 +1,14 @@
 import nodemailer from 'nodemailer';
 
-// Create transporter using SMTP (using Brevo SMTP)
+// Create transporter using Brevo SMTP
 const createTransporter = () => {
   return nodemailer.createTransport({
     host: 'smtp-relay.brevo.com',
     port: 587,
-    secure: false, // true for 465, false for other ports
+    secure: false,
     auth: {
-      user: process.env.BREVO_SMTP_LOGIN, // Your Brevo SMTP login
-      pass: process.env.BREVO_SMTP_KEY, // Your Brevo SMTP key
+      user: process.env.BREVO_SMTP_LOGIN,
+      pass: process.env.BREVO_SMTP_KEY,
     },
   });
 };
@@ -128,6 +128,142 @@ TalkCure Team
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error('Error sending ownership approval email:', error);
+    throw error;
+  }
+};
+
+interface EmailDataTherapist {
+  therapistEmail: string;
+  therapistName: string;
+  clientName: string;
+  clientPhone: string;
+  clientEmail: string;
+  issues: string[];
+  age: number; 
+  gender: string;
+  sessionDate: string;
+  sessionTime: string;
+}
+
+export const sendEmailTherapist = async (data: EmailDataTherapist) => {
+  const transporter = createTransporter();
+  
+  const { therapistEmail, therapistName, clientName, clientPhone, clientEmail, issues, age, gender, sessionDate, sessionTime } = data;
+
+  const mailOptions = {
+    from: `"TalkCure" <${process.env.BREVO_VERIFIED_SENDER}>`,
+    to: therapistEmail,
+    subject: `New Counselling Session Assigned`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+        
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 26px;">
+            🧠 New Session Assigned
+          </h1>
+          <p style="color: #e0e7ff; margin-top: 10px;">
+            A new client session has been scheduled for you
+          </p>
+        </div>
+
+        <!-- Content -->
+        <div style="padding: 40px 30px;">
+          <p style="font-size: 16px; color: #374151;">
+            Hi <strong>${therapistName}</strong>,
+          </p>
+
+          <p style="font-size: 16px; color: #374151;">
+            You have been assigned a new counselling session. Below are the details:
+          </p>
+
+          <!-- Session Info -->
+          <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-top: 20px;">
+            <h3 style="margin-bottom: 15px;">📅 Session Details</h3>
+            <table style="width: 100%;">
+              <tr>
+                <td><strong>Client Name:</strong></td>
+                <td>${clientName || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td><strong>Age:</strong></td>
+                <td>${age}</td>
+              </tr>
+              <tr>
+                <td><strong>Gender:</strong></td>
+                <td>${gender}</td>
+              </tr>
+              <tr>
+                <td><strong>Email:</strong></td>
+                <td>${clientEmail}</td>
+              </tr>
+              <tr>
+                <td><strong>Phone Number:</strong></td>
+                <td>${clientPhone}</td>
+              </tr>
+              <tr>
+                <td><strong>Issues:</strong></td>
+                <td>${issues?.join(', ') || 'N/A'}</td>
+              </tr>
+              <tr>
+                <td><strong>Date:</strong></td>
+                <td>${sessionDate}</td>
+              </tr>
+              <tr>
+                <td><strong>Time:</strong></td>
+                <td>${sessionTime}</td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- Instructions -->
+          <div style="background-color: #eef2ff; border-left: 4px solid #6366f1; padding: 20px; margin-top: 25px;">
+            <h3 style="margin-bottom: 10px;">⚡ Action Required</h3>
+            <ul style="padding-left: 20px; color: #374151;">
+              <li>Please be available 10 minutes before the session.</li>
+              <li>Review the client details beforehand.</li>
+              <li>Ensure a stable internet connection.</li>
+            </ul>
+          </div>
+
+          <p style="margin-top: 25px; font-size: 16px;">
+            If you have any questions, feel free to reach out to the support team.
+          </p>
+        </div>
+
+        <!-- Footer -->
+        <div style="background-color: #f3f4f6; padding: 20px; text-align: center; font-size: 14px; color: #6b7280;">
+          Regards,<br/>
+          <strong>TalkCure Team</strong>
+        </div>
+      </div>
+    `,
+    text: `
+Hi ${therapistName},
+
+A new counselling session has been assigned to you.
+
+Client: ${clientName || 'N/A'}
+Age: ${age}
+Gender: ${gender}
+Issues: ${issues?.join(', ') || 'N/A'}
+
+Session Date: ${sessionDate}
+Session Time: ${sessionTime}
+
+Please be available before the session.
+
+Regards,
+TalkCure Team
+    `
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Therapist email sent:', info.messageId);
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Error sending therapist email:', error);
     throw error;
   }
 };

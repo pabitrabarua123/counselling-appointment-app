@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { PrismaClient } from "@prisma/client";
-import { sendEmailCustomer } from "@/lib/emailService";
+import { sendEmailCustomer, sendEmailTherapist } from "@/lib/emailService";
 
 const prisma = new PrismaClient();
 
@@ -124,6 +124,13 @@ export async function POST(req: NextRequest) {
             },
           });
 
+          // retrieve therapist email, name
+          const therapist = await prisma.user.findUnique({
+            where: {
+              id: bookingData.therapistId
+            }
+          });
+
           // event update
           fetch(`${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/events`, {
             method: "POST",
@@ -137,7 +144,7 @@ export async function POST(req: NextRequest) {
             }),
           }).then(res => {
             console.log("Event created in Google Calendar:", res.status);
-            // send email to client and therapist
+            // send confirmation email to client
             sendEmailCustomer({
               userEmail: order_details?.customerEmail || "",
               userName: order_details?.customerName || "",
@@ -145,6 +152,30 @@ export async function POST(req: NextRequest) {
               sessionDate: order_details?.sessionStart.toDateString() || "",
               sessionTime: order_details?.sessionStart.toTimeString().split(" ")[0] || "",
             });
+
+            // send confirmation email to therapist
+            sendEmailTherapist({
+              therapistEmail: therapist?.email || '',
+              therapistName: therapist?.name || '',
+              clientName: customerName ? customerName : '',
+              clientPhone: customerPhone ? customerPhone : '',
+              clientEmail: customerEmail ? customerEmail : '',
+              issues: bookingData.reason,
+              age:
+               new Date().getFullYear() -
+               new Date(bookingData.dateOfBirth).getFullYear() -
+                (new Date() <
+                  new Date(
+                   new Date().getFullYear(),
+                   new Date(bookingData.dateOfBirth).getMonth(),
+                   new Date(bookingData.dateOfBirth).getDate()
+                  )
+                ? 1
+              : 0),
+              gender: bookingData.genderIdentity,
+              sessionDate: order_details?.sessionStart.toDateString() || "",
+              sessionTime: order_details?.sessionStart.toTimeString().split(" ")[0] || "",
+            })
           }).catch(err => {
             console.error("Error creating event in Google Calendar:", err);
           });
