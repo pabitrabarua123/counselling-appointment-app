@@ -216,52 +216,65 @@ export default function AddTherapist() {
   const newErrors: FormErrors = {};
 
   if (!therapistData.gender) {
+    console.log('gender failed')
     newErrors.gender = "Gender is required";
   }
 
   if (!therapistData.languages || therapistData.languages.length === 0) {
+    console.log('lang failed')
     newErrors.languages = "Please select at least one language";
   }
 
   if (!therapistData.googleCalendarId) {
+    console.log('googleCalendarId failed')
     newErrors.googleCalendarId = "Google Calendar Email is required";
   } else if (!/\S+@\S+\.\S+/.test(therapistData.googleCalendarId)) {
+    console.log('googleCalendarId 2 failed')
     newErrors.googleCalendarId = "Invalid email address";
   }
 
   if (!therapistData.phoneNumber) {
+    console.log('phoneNumber failed')
     newErrors.phoneNumber = "Phone number is required";
   }
 
   if (!therapistData.degree) {
+    console.log('degree failed')
     newErrors.degree = "Qualification is required";
   }
 
   if (!therapistData.yearOfExp || therapistData.yearOfExp <= 0) {
+    console.log('yearOfExp failed')
     newErrors.yearOfExp = "Years of experience must be greater than 0";
   }
 
   if (!therapistData.area || therapistData.area.length === 0) {
+    console.log('area failed')
     newErrors.area = "Select at least one area of expertise";
   }
 
   if (!therapistData.timing || therapistData.timing.length === 0) {
+    console.log('timing failed')
     newErrors.timing = "Select at least one time slot";
   }
 
   if (!therapistData.days || therapistData.days.length === 0) {
+    console.log('days failed')
     newErrors.days = "Select at least one day";
   }
 
   if (!therapistData.aboutTherapist) {
+    console.log('aboutTherapist failed')
     newErrors.aboutTherapist = "About Therapist is required";
   }
 
   if (!therapistData.profilePic) {
+    console.log('profilePic failed')
     newErrors.profilePic = "Profile picture is required";
   }
 
   setErrors(newErrors as typeof errors);
+  console.log(Object.keys(newErrors).length);
 
   return Object.keys(newErrors).length === 0;
 };
@@ -269,11 +282,10 @@ export default function AddTherapist() {
   const [submitSuccess, setSubmitSuccess] = useState(0);
   const handleSubmitData = async () => {
     if (!validateFields()) {
-      //console.log("Validation failed:", errors);
+      console.log("Validation failed:", errors);
       return;
     }
     setSubmitSuccess(1);
-    //return;
 
     const res = await fetch("/api/add-therapist", {
           method: "POST",
@@ -317,7 +329,7 @@ export default function AddTherapist() {
                <MultiSelect
                 label="Select Languages"
                 options={multiOptionsLanguage}
-                defaultSelected={["English", "French"]}
+                defaultSelected={[]}
                 onChange={(values) => handleLanguageChange(values)}
                />
                <p className="sr-only">
