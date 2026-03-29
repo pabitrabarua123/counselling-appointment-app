@@ -9,14 +9,14 @@ const prisma = new PrismaClient({
 
 export async function GET(req: NextRequest) {
   try {
-        // Check session
-        const session = await getServerSession(authOptions);
-        if (!session || session.user.role !== 1) {
-          return NextResponse.json(
-            { message: "Unauthorized" },
-            { status: 401 }
-          );
-        }
+    // Check session
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== 1) {
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
 
     const { searchParams } = new URL(req.url);
 

@@ -277,7 +277,7 @@ function formatTime24To12(time: string) {
                         <Badge variant='light'>{item}</Badge>
                       </span>
                     ))}</p>
-                    <p className="text-gray-600 text-sm">{therapist.yearOfExp} experience</p>
+                    <p className="text-gray-600 text-sm">{therapist.yearOfExp}+ years</p>
                     <div className="flex items-center justify-center mt-2 mb-6">
                       { [1,2,3,4,5].map((star) => (
                         <span key={star} className={`text-xl ${(therapist.rating ?? 0) >= star ? 'text-yellow-400' : 'text-gray-300'}`}>★</span>

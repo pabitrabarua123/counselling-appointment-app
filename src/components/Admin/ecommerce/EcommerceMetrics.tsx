@@ -8,26 +8,11 @@ import { fetchData } from "next-auth/client/_utils";
 type DashboardData = {
   clients: number,
   therapists: number,
-  orders: number,
-    revenue: {
-    _sum: {
-      amount: number | null;
-    };
-  };
+  sessions: number,
+  revenue: number
 }
 
-export default function EcommerceMetrics() {
-
- const [data, setData] = useState<DashboardData | null>(null);  
-useEffect(() => {
-  async function fetchData() {
-    const res = await fetch("/api/dashboard-data");
-    const result = await res.json();
-    console.log(result)
-    setData(result.data);
-  }
-  fetchData();
-}, []);
+export default function EcommerceMetrics({ data} : {data : DashboardData}) {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
@@ -44,7 +29,7 @@ useEffect(() => {
               Clients
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-             {data ? (
+             {data.clients !== 0 ? (
                 data.clients
               ) : (
                 <span className="inline-block w-10 h-5 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></span>
@@ -71,7 +56,7 @@ useEffect(() => {
               Therapists
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-             {data ? (
+             {data.therapists !== 0 ? (
                 data.therapists
               ) : (
                 <span className="inline-block w-10 h-5 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></span>
@@ -98,8 +83,8 @@ useEffect(() => {
               Session Bookings
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-             {data ? (
-                data.orders
+             {data.sessions !== 0 ? (
+                data.sessions
               ) : (
                 <span className="inline-block w-10 h-5 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></span>
              )}
@@ -125,8 +110,8 @@ useEffect(() => {
               Revenue
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-             {data ? (
-                "$" + data.revenue._sum.amount
+             {data.revenue !== 0 ? (
+                "$" + data.revenue
               ) : (
                 <span className="inline-block w-10 h-5 bg-gray-200 rounded animate-pulse dark:bg-gray-700"></span>
              )}

@@ -3,7 +3,7 @@
 import EcommerceMetrics from "../ecommerce/EcommerceMetrics";
 import MonthlySalesChart from "../ecommerce/MonthlySalesChart";
 import StatisticsChart from "../ecommerce/StatisticsChart";
-import MonthlyTarget from "../ecommerce/MonthlyTarget";
+import MonthlyTarget from "../ecommerce/TherapyPieChart";
 import RecentOrders from "../ecommerce/RecentOrders";
 
 export default function Report() {

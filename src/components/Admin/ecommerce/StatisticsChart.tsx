@@ -1,44 +1,16 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
-import flatpickr from "flatpickr";
-import ChartTab from "../common/ChartTab";
+import { useRouter } from "next/navigation";
 
 const Chart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
 
-export default function StatisticsChart() {
-  const datePickerRef = useRef<HTMLInputElement>(null);
+export default function StatisticsChart({series, categories} : { series: { name: string; data: number[]; }[], categories: string[] | null }) {
 
-  useEffect(() => {
-    if (!datePickerRef.current) return;
-
-    const today = new Date();
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(today.getDate() - 6);
-
-    const fp = flatpickr(datePickerRef.current, {
-      mode: "range",
-      static: true,
-      monthSelectorType: "static",
-      dateFormat: "M d",
-      defaultDate: [sevenDaysAgo, today],
-      clickOpens: true,
-      prevArrow:
-        '<svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 15L7.5 10L12.5 5" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      nextArrow:
-        '<svg class="stroke-current" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 15L12.5 10L7.5 5" stroke="" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-    });
-
-    return () => {
-      if (!Array.isArray(fp)) {
-        fp.destroy();
-      }
-    };
-  }, []);
+  const router = useRouter();
 
   const options: ApexOptions = {
     legend: {
@@ -46,7 +18,7 @@ export default function StatisticsChart() {
       position: "top",
       horizontalAlign: "left",
     },
-    colors: ["#465FFF", "#9CB9FF"], // Define line colors
+    colors: ["#9CB9FF"], // Define line colors
     chart: {
       fontFamily: "Outfit, sans-serif",
       height: 310,
@@ -98,20 +70,7 @@ export default function StatisticsChart() {
     },
     xaxis: {
       type: "category", // Category-based x-axis
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      categories: categories,
       axisBorder: {
         show: false, // Hide x-axis border
       },
@@ -138,16 +97,6 @@ export default function StatisticsChart() {
     },
   };
 
-  const series = [
-    {
-      name: "Sales",
-      data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
-    },
-    {
-      name: "Revenue",
-      data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
-    },
-  ];
   return (
     <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
@@ -156,17 +105,30 @@ export default function StatisticsChart() {
             Statistics
           </h3>
           <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-            Performance of bookings and revenue trends
+            Performance of session bookings trends over the last 12 months
           </p>
         </div>
-        <div className="flex items-center gap-3 sm:justify-end">
-          <ChartTab />
+        <div className="flex items-center gap-3 sm:justify-end w-[200px]">
+          <button 
+            className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+            onClick={() => router.push('/admin/session-bookings')}
+            >
+            See all
+          </button>
         </div>
       </div>
 
       <div className="max-w-full overflow-x-auto custom-scrollbar">
         <div className="min-w-[1000px] xl:min-w-full">
-          <Chart options={options} series={series} type="area" height={310} />
+          { series.length === 0 ? (
+            <div className="w-full h-[350px] animate-pulse">
+              <div className="h-full w-full bg-gray-200 rounded-lg"></div>
+            </div>
+          ) : (
+            <div className="w-full h-[350px]">
+              <Chart options={options} series={series} type="area" height={310} />
+            </div>
+          )}
         </div>
       </div>
     </div>
