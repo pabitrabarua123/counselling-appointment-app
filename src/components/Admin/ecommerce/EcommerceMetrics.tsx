@@ -2,8 +2,6 @@
 
 import { CalendarCheck, CircleDollarSign, Stethoscope, Users } from "lucide-react";
 import Badge from "../ui/badge/Badge";
-import { useEffect, useState } from "react";
-import { fetchData } from "next-auth/client/_utils";
 
 type DashboardData = {
   clients: number,
