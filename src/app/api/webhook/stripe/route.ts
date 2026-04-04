@@ -131,14 +131,14 @@ export async function POST(req: NextRequest) {
             }
           });
 
-          // event update
+          // event created in google calendar
           fetch(`${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/events`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               googleCalendarId: order_details?.therapist.email,    
-              summary: order_details?.serviceType,
-              description: order_details?.serviceType,
+              summary: customerName ? `Session with ${customerName}` : "New Session Booked",
+              description: order_details?.serviceType ? `Session Type: ${order_details.serviceType}` : "New session booked through Talkcure",
               startTime: order_details?.sessionStart.toISOString(),
               endTime: order_details?.sessionEnd.toISOString(),
             }),
