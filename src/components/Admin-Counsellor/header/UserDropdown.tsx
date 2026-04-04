@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import { Dropdown } from "../ui/dropdown/Dropdown";
+import { DropdownItem } from "@/components/Admin/ui/dropdown/DropdownItem";
+import { Dropdown } from "@/components/Admin/ui/dropdown/Dropdown";
 import { User } from "lucide-react"
 import { signOut } from "next-auth/react";
-import Button from "../ui/button/Button";
+import Button from "@/components/Admin/ui/button/Button";
 import { useSession } from "next-auth/react";
 
 export default function UserDropdown() {
