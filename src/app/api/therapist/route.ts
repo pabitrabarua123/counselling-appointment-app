@@ -43,6 +43,12 @@ export async function GET(request: NextRequest) {
                                 id: true,
                                 customerName: true
                             }
+                        },
+                        slot: {
+                            select: {
+                                days: true,
+                                timing: true
+                            }
                         }
                     }
                 }

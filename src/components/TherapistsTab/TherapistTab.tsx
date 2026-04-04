@@ -31,7 +31,7 @@ const TherapistsTab = () => {
           throw new Error('Network response was not ok');
        }
        const data: TherapistApiResponse[] = await response.json();
-       return data.map((therapist) => {
+       return data.slice(0, 3).map((therapist) => {
           return {
             id: therapist.id,
             name: therapist.user.name,

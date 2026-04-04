@@ -21,7 +21,7 @@ export default async function AdminLayout({
 
   if (!session) {
     redirect(
-      `/api/auth/signin?callbackUrl=${encodeURIComponent("/admin")}`
+      `/api/auth/signin`
     );
   }
 

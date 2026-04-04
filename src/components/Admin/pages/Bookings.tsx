@@ -108,8 +108,6 @@ export default function Bookings() {
   });
 
   const fetchBookings = async (pageNumber: number) => {
-    setLoading(true);
-
     const params = new URLSearchParams({
       page: String(pageNumber),
       limit: String(limit),
@@ -159,7 +157,7 @@ export default function Bookings() {
 
    const a = document.createElement("a");
    a.href = url;
-   a.download = "bookings.csv";
+   a.download = "Session-Bookings.csv";
    a.click();
  };
 
@@ -212,11 +210,11 @@ export default function Bookings() {
         </div>
 
       {/* Load More Button */}
-      {hasMore && (
+      { hasMore && (
         <div className="mt-4 mb-2 text-center">
           <Button
             variant="outline"
-            onClick={() => setPage((prev) => prev + 1)}
+            onClick={() => { setLoading(true); setPage((prev) => prev + 1);}}
             disabled={loading}
           >
             { loading ? 
@@ -231,11 +229,34 @@ export default function Bookings() {
           </> 
        ) : 
        (
+         ( filters.therapistId || filters.serviceType || filters.startDate || filters.endDate ) ? (
+          <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[400px]">
+            <p>No sessions found for the applied filters.</p>
+            <Button variant="outline" className="mt-4" onClick={() => {
+              setFilters({
+                therapistId: "",
+                serviceType: "",
+                startDate: "",
+                endDate: "",
+              });
+              setAppliedFilters({
+                therapistId: "",
+                serviceType: "",
+                startDate: "",
+                endDate: "",
+              });
+              setPage(1);
+            }}>
+              Reset Filters
+            </Button>
+          </div>
+       ) : (
           <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[400px]">
             <Image src="/images/loading.svg" alt="Loading" width={60} height={60} /> Getting sessions...
           </div>
        )
-       }
+      )
+    }
 
       </ComponentCardTable>
       {showFilter && (
@@ -271,7 +292,7 @@ export const FilterModal = ({
   <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-[99999]">
     <div className="bg-white p-6 rounded-lg w-[420px] shadow-lg relative">    
       <h2 className="text-lg font-semibold mb-4">
-        Filter Bookings
+        Filter Session Bookings
       </h2>
       <span
           className="ml-2 cursor-pointer text-gray-500 hover:text-gray-700 absolute top-3 right-3 text-2xl"

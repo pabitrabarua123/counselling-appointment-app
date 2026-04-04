@@ -1,7 +1,7 @@
-import Account from "@/components/Admin/pages/Account";
+import Account from "@/components/Admin-Counsellor/pages/Account";
 
 export const metadata = {
-  title: "Admin Dashboard | TalkCure",
+  title: "Counsellor Dashboard | TalkCure",
 };
 
 export default function AdminAccount() {

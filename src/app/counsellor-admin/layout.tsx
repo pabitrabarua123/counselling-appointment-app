@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
-import AppSidebar from "@/components/Admin/AppSidebar";
+import AppSidebar from "@/components/Admin-Counsellor/AppSidebar";
 import AppHeader from "@/components/Admin/AppHeader";
 import Backdrop from "@/components/Admin/Backdrop";
 import { SidebarProvider } from "@/components/providers/SidebarContext";
@@ -21,12 +21,8 @@ export default async function AdminLayout({
 
   if (!session) {
     redirect(
-      `/api/auth/signin?callbackUrl=${encodeURIComponent("/admin")}`
+      `/api/auth/signin`
     );
-  }
-
-  if (session.user.role !== 1) {
-    redirect("/unauthorized");
   }
 
   return (

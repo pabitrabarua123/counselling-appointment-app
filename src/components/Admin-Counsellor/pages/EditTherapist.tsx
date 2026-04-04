@@ -14,6 +14,9 @@ import { useDropzone } from "react-dropzone";
 import Button from "@/components/ui/Button";
 import Image from "next/image";
 import { Therapist } from "@prisma/client";
+import { SkeletonLoader } from "../common/SkeletonLoader";
+import { useSession } from "next-auth/react";
+import { error } from "console";
 
 type TherapistData = Pick<
   Therapist,
@@ -38,7 +41,11 @@ type FormErrors = {
   profilePic?: string;
 };
 
-export default function AddTherapist() {
+export default function EditTherapist() {
+  const { data: session } = useSession();
+ // console.log(session);
+
+  const [loading, setLoading] = useState(true);
   const [therapistData, setTherapistData] = useState<TherapistData>({
     area: [],
     languages: [],
@@ -52,6 +59,42 @@ export default function AddTherapist() {
     days: [],
     profilePic: "",
   });
+
+  useEffect(() => {
+    const fetchTherapist = async () => {
+      fetch(`/api/therapist?id=${session?.user.id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data)
+        console.log("About bal: " + data.aboutTherapist);
+        setTherapistData((prev) => ({
+            ...prev,
+            aboutTherapist: data.aboutTherapist,
+            area: data.area,
+            languages: data.languages,
+            phoneNumber: data.phoneNumber,
+            googleCalendarId: data.googleCalendarId,
+            gender: data.gender,
+            degree: data.degree,
+            yearOfExp: data.yearOfExp,
+            profilePic: data.profilePic,
+            timing: data.user.slot.timing,
+            days: data.user.slot.days,
+          })
+        )
+        setPreview(data.profilePic);
+      })
+      .catch(
+        (error) => {
+          console.log(error)
+        }
+      )
+      .finally(() => {
+        setLoading(false);
+      })
+    }
+    fetchTherapist();
+  }, [session?.user.id])
 
   const optionsGender = [
     { value: "male", label: "Male" },
@@ -305,9 +348,15 @@ export default function AddTherapist() {
     }
   }
 
+  if (loading) {
+  return (
+   <SkeletonLoader />
+  );
+}
+
   return (
     <div>
-      <PageBreadcrumb pageTitle="Add New Therapist" />
+      <PageBreadcrumb pageTitle="Edit Therapist" />
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <div className="space-y-6">
           <ComponentCard title="Basic Information">
@@ -319,7 +368,9 @@ export default function AddTherapist() {
                   )}
                 </Label>
                 <Select
+                  key={therapistData.gender}
                   options={optionsGender}
+                  defaultValue={therapistData.gender || ''}
                   placeholder="Select Gender"
                   onChange={handleSelectGender}
                   className="dark:bg-dark-900"
@@ -327,9 +378,10 @@ export default function AddTherapist() {
               </div>
               <div>
                <MultiSelect
+                key={therapistData.languages.join(",")}
                 label="Select Languages"
                 options={multiOptionsLanguage}
-                defaultSelected={[]}
+                defaultSelected={therapistData.languages}
                 onChange={(values) => handleLanguageChange(values)}
                />
                <p className="sr-only">
@@ -346,6 +398,7 @@ export default function AddTherapist() {
                  <Input
                   placeholder="info@gmail.com"
                   type="text"
+                  value={therapistData.googleCalendarId || ''}
                   className="pl-[62px]"
                   onChange={(e) => setTherapistData((prevData) => ({ ...prevData, googleCalendarId: e.target.value }))}
                  />
@@ -379,7 +432,13 @@ export default function AddTherapist() {
                    <span className="text-[#db392e] text-xs">*{errors.degree}</span>
                   )}
                 </Label>
-                <Input type="text" id="Qualification" placeholder="Msc. in Counselling Phychology" onChange={(e) => setTherapistData((prevData) => ({ ...prevData, degree: e.target.value }))} />
+                <Input 
+                  type="text" 
+                  id="Qualification" 
+                  value={therapistData.degree || ''}
+                  placeholder="Msc. in Counselling Phychology" 
+                  onChange={(e) => setTherapistData((prevData) => ({ ...prevData, degree: e.target.value }))} 
+                />
               </div>
               <div>
                <Label htmlFor="yearsOfExperience" className="flex justify-between items-center">Years of Experience
@@ -387,7 +446,13 @@ export default function AddTherapist() {
                    <span className="text-[#db392e] text-xs">*{errors.yearOfExp}</span>
                 )}
                </Label>
-                <Input type="number" id="yearsOfExperience" placeholder="10" onChange={(e) => setTherapistData((prevData) => ({ ...prevData, yearOfExp: parseInt(e.target.value) || 0 }))}/>
+                <Input 
+                  type="number" 
+                  id="yearsOfExperience" 
+                  value={therapistData.yearOfExp || ''}
+                  placeholder="10" 
+                  onChange={(e) => setTherapistData((prevData) => ({ ...prevData, yearOfExp: parseInt(e.target.value) || 0 }))}
+                />
               </div>
               <Label htmlFor="Qualification" className="flex justify-between items-center">Area of Expertise
                 {errors.area && (
@@ -484,7 +549,7 @@ export default function AddTherapist() {
       <div className="transition max-w-lg border border-gray-300 border-dashed cursor-pointer dark:hover:border-brand-500 dark:border-gray-700 rounded-xl hover:border-brand-500">
         <form
           {...getRootProps()}
-          className={`dropzone rounded-xl   border-dashed border-gray-300 p-7 lg:p-10
+          className={`dropzone rounded-xl border-dashed border-gray-300 p-7 lg:p-10
         ${
           isDragActive
             ? "border-brand-500 bg-gray-100 dark:bg-gray-800"
@@ -499,15 +564,19 @@ export default function AddTherapist() {
             <div className="flex items-center justify-center h-32">
              <Image src="/images/loading.svg" alt="Uploading..." width={50} height={50}/>
              <span className="ml-0 text-gray-700 dark:text-gray-400">Uploading...</span>
-            </div>) }
+            </div>
+            ) 
+          }
+
           { preview && (
             <div className="flex flex-col items-center m-0!">
               <Image src={preview} alt="Preview" className="mb-4 max-h-48 rounded-lg object-cover" width={200} height={200}/>
-              <button className="bg-red-500 text-white text-[11px] px-4 py-2 rounded-md hover:bg-red-600" onClick={() => setPreview("")}>
+              <button type="button" className="bg-red-500 text-white text-[11px] px-4 py-2 rounded-md hover:bg-red-600" onClick={() => setPreview("")}>
                 Change Image
               </button>
             </div>
-          )} 
+          )}
+
           {!preview && !uploading &&
            (
           <div className="dz-message flex flex-col items-center m-0!">
@@ -544,7 +613,7 @@ export default function AddTherapist() {
             </span>
           </div>
           ) }
-        </form>
+        </form> 
       </div>
       <div>
         <Checkbox
@@ -568,13 +637,13 @@ export default function AddTherapist() {
         height={30}
         className="inline mr-0"
       />
-      Adding Therapist...
+      Submitting...
     </>
   ) : (
     "Submit Details"
   )}
 </Button>
-        {submitSuccess === 2 && <p className="text-green-600 mt-2">Therapist added successfully!</p>}
+        {submitSuccess === 2 && <p className="text-green-600 mt-2">Therapist updated successfully!</p>}
       </div>
     </div>
           </ComponentCard>

@@ -1,7 +1,7 @@
-import Bookings from "@/components/Admin/pages/Bookings";
+import Bookings from "@/components/Admin-Counsellor/pages/Bookings";
 
 export const metadata = {
-  title: "Admin Dashboard | TalkCure",
+  title: "Counsellor Dashboard | TalkCure",
 };
 
 export default function AdminBookings() {

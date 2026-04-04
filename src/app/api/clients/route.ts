@@ -9,14 +9,15 @@ const prisma = new PrismaClient({
 
 export async function GET(req: NextRequest) {
   try {
-            // Check session
-            const session = await getServerSession(authOptions);
-            if (!session || session.user.role !== 1) {
-              return NextResponse.json(
-                { message: "Unauthorized" },
-                { status: 401 }
-              );
-            }
+    // Check session
+    const session = await getServerSession(authOptions);
+    if (!session) {
+         return NextResponse.json(
+           { message: "Unauthorized" },
+           { status: 401 }
+         );
+    }
+
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("id");
 
@@ -60,7 +61,7 @@ export async function GET(req: NextRequest) {
     }
 
     if (page) {
-    console.log("Booking API - Where Clause:", where);
+    console.log("Client API - Where Clause:", where);
     const [clients, total] = await Promise.all([
       prisma.client.findMany({
         where,
@@ -82,7 +83,7 @@ export async function GET(req: NextRequest) {
       prisma.client.count({ where }),
     ]);
 
-    console.log("Booking API - Clients:", clients);
+    console.log("Client API :", clients);
 
     return NextResponse.json({
       data: clients,

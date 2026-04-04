@@ -284,3 +284,6 @@
 .swiper {
   padding-bottom: 40px !important;
 }
+.Toastify__toast-container.Toastify__toast-container--top-right {
+    z-index: 999999;
+}

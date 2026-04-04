@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     // Check session
     const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 1) {
+    if (!session) {
       return NextResponse.json(
         { message: "Unauthorized" },
         { status: 401 }
@@ -37,31 +37,48 @@ export async function POST(request: NextRequest) {
 
     // Transaction: therapist + slots
     const result = await prisma.$transaction(async (tx) => {
-      const therapist = await tx.therapist.create({
-        data: {
-          userId,
-          area,
-          languages,
-          aboutTherapist,
-          phoneNumber,
-          googleCalendarId,
-          degree,
-          yearOfExp,
-          gender,
-          profilePic,
-        },
-      });
-
-      const slot = await tx.slot.create({
-        data: {
-          userId,
-          timing,
-          days,
-        },
-      });
-
-      return { therapist, slot };
+      const therapist = await tx.therapist.upsert({
+        where: { userId }, // must be UNIQUE
+        update: {
+         area,
+         languages,
+         aboutTherapist,
+         phoneNumber,
+         googleCalendarId,
+         degree,
+         yearOfExp,
+         gender,
+         profilePic,
+       },
+       create: {
+        userId,
+        area,
+        languages,
+        aboutTherapist,
+        phoneNumber,
+        googleCalendarId,
+        degree,
+        yearOfExp,
+        gender,
+        profilePic,
+      },
     });
+
+    const slot = await tx.slot.upsert({
+      where: { userId }, // also should be UNIQUE if 1 slot per user
+      update: {
+        timing,
+        days,
+      },
+      create: {
+        userId,
+        timing,
+        days,
+      },
+    });
+
+    return { therapist, slot };
+  });
 
     return NextResponse.json(
       {

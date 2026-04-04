@@ -1,7 +1,7 @@
-import Clients from "@/components/Admin/pages/Clients";
+import Clients from "@/components/Admin-Counsellor/pages/Clients";
 
 export const metadata = {
-  title: "Admin Dashboard | TalkCure",
+  title: "Counsellor Dashboard | TalkCure",
 };
 
 export default function AdminClients() {

@@ -86,9 +86,9 @@ const AppHeader: React.FC = () => {
             )}
             {/* Cross Icon */}
           </button>
-          <Button variant="outline" size="sm" className="hidden lg:inline-flex" onClick={() => router.push("/admin/add-therapist")}>
+          {/* <Button variant="outline" size="sm" className="hidden lg:inline-flex" onClick={() => router.push("/admin/add-therapist")}>
            <Plus className="w-4 h-4 mr-0" /> Add new Therapist
-          </Button>
+          </Button> */}
         </div>
         <div
           className={`${

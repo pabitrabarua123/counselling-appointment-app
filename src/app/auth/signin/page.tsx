@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { getSession } from 'next-auth/react'
 
 export default function SignIn() {
   const router = useRouter()
@@ -28,7 +29,14 @@ export default function SignIn() {
         setError('Invalid credentials')
         setSubmit(false)
       } else {
-        router.push('/admin')
+        const session = await getSession()
+        const role = session?.user?.role
+        //console.log(role);
+        if (role === 1) {
+            router.push('/admin')
+        } else {
+            router.push('/counsellor-admin')
+        }
         router.refresh()
       }
     } catch (error) {

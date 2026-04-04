@@ -66,9 +66,9 @@ const Navigation = () => {
             })}
           </div>
           <div className="flex items-center">
-            <Link href="/" className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all duration-300 ease-out cursor-pointer bg-gradient text-white hover:-translate-y-1 h-10 rounded-xl px-5 w-full group sm:w-auto">
+            <Link href="/counsellor-admin" className="inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-all duration-300 ease-out cursor-pointer bg-gradient text-white hover:-translate-y-1 h-10 rounded-xl px-5 w-full group sm:w-auto">
               <Calendar className="h-4 w-4 text-white" />
-              <span className="text-sm font-medium">Book Assesment</span>
+              <span className="text-sm font-medium">Counsellor Panel</span>
             </Link>
           </div>
         </div>

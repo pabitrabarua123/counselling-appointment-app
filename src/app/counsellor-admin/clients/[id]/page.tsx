@@ -1,7 +1,7 @@
-import ClientDetails from "@/components/Admin/pages/ClientDetails";
+import ClientDetails from "@/components/Admin-Counsellor/pages/ClientDetails";
 
 export const metadata = {
-  title: "Admin Dashboard | TalkCure",
+  title: "Counsellor Dashboard | TalkCure",
 };
 
 type Props = {

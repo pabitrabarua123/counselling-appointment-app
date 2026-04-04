@@ -85,8 +85,6 @@ export default function Clients() {
   });
 
   const fetchClients = async (pageNumber: number) => {
-    setLoading(true);
-
     const params = new URLSearchParams({
       page: String(pageNumber),
       limit: String(limit),
@@ -194,7 +192,7 @@ export default function Clients() {
         <div className="mt-4 mb-2 text-center">
           <Button
             variant="outline"
-            onClick={() => setPage((prev) => prev + 1)}
+            onClick={() => {setLoading(true); setPage((prev) => prev + 1);}}
             disabled={loading}
           >
             { loading ? 
@@ -209,10 +207,36 @@ export default function Clients() {
           </> 
        ) : 
        (
-          <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[400px]">
-            <Image src="/images/loading.svg" alt="Loading" width={60} height={60} /> Getting clients...
-          </div>
-       )
+        ( filters.therapistId !== "" ||
+          filters.sessionType !== "" ||
+          filters.startDate !== "" ||
+          filters.endDate !== "" ) ? (
+            <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[400px]">
+              <p>Sorry, No client found with the applied filters.</p>
+              <Button variant="outline" className="mt-4" onClick={() => {
+                setFilters({
+                  therapistId: "",
+                  sessionType: "",
+                  startDate: "",
+                  endDate: "",
+                });
+                setAppliedFilters({
+                  therapistId: "",
+                  sessionType: "",
+                  startDate: "",
+                  endDate: "",
+                });
+                setPage(1);
+              }}>
+                Reset Filters
+              </Button>
+            </div>
+         ) : (
+            <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[400px]">
+              <Image src="/images/loading.svg" alt="Loading" width={60} height={60} /> Getting clients...
+            </div>
+          )
+         )
        }
 
       </ComponentCardTable>

@@ -11,6 +11,7 @@ export interface Therapist {
   phoneNumber: string | null;
   profilePic: string | null;
   userId: string;
+  isVerified: boolean;
   user: {
     id: string;
     name: string;
@@ -18,7 +19,12 @@ export interface Therapist {
     orders: {
       id: string;
       customerName: string;
-  }[]
+    }[],
+    slot: {
+      id: string;
+      days: string[];
+      timing: string[];
+    }
   };
 };
 

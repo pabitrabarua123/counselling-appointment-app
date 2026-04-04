@@ -4,6 +4,7 @@ import AuthProvider from '@/components/providers/AuthProvider'
 import Footer from '@/components/Footer'
 import { Outfit } from 'next/font/google'
 import ReactQueryProvider from '@/components/providers/ReactQueryProvider'
+import ToastProvider from "@/components/providers/ToastProvider";
 
 const outfit = Outfit({ subsets: ['latin'] })
 
@@ -23,6 +24,7 @@ export default function RootLayout({
         <AuthProvider>
           <ReactQueryProvider>
             {children}
+            <ToastProvider />
           </ReactQueryProvider>
         </AuthProvider>
       </body>

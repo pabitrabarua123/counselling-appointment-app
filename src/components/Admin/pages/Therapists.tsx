@@ -12,7 +12,7 @@ import Badge from "../ui/badge/Badge";
 import Button from "../ui/button/Button";
 import Image from "next/image";
 import ComponentCardTable from "../common/ComponentCardTable";
-import { Pencil, SquarePen, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { Therapist } from "@/types";
 
 type Filters = {
@@ -61,6 +61,11 @@ export default function Therapists() {
        );
       },
     },
+{
+  header: "Number of Sessions",
+  accessorFn: (row) => row.user?.orders?.length ?? 0,
+  cell: ({ getValue }) => getValue<number>() || "0",
+},
     {
   accessorKey: "rating",
   header: "Rating",
@@ -93,22 +98,12 @@ export default function Therapists() {
         >
          Details
        </button>
-       <button
-         className="px-3 py-1.5 text-xs font-medium text-secondary bg-[#e0d1fc] rounded-md cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 flex items-center gap-1"
-         onClick={() => {
-            window.open(`/admin/therapists/${row.original.user.id}`, "_blank");
-         }}
-        >
-         <Pencil className="w-[12px] h-[12px] mb-[2px]"/> Edit
-       </button>
       </div>
       ),
     },
   ];
 
   const fetchTherapists = async (pageNumber: number) => {
-    setLoading(true);
-
     const params = new URLSearchParams({
       page: String(pageNumber),
       limit: String(limit),
@@ -207,7 +202,7 @@ export default function Therapists() {
         <div className="mt-4 mb-2 text-center">
           <Button
             variant="outline"
-            onClick={() => setPage((prev) => prev + 1)}
+            onClick={() => { setLoading(true); setPage((prev) => prev + 1);}}
             disabled={loading}
           >
             { loading ? 
@@ -222,9 +217,34 @@ export default function Therapists() {
           </> 
        ) : 
        (
+         ( filters.area !== "" ||
+           filters.rating !== null ||
+           filters.gender !== "" ||
+           filters.languages !== ""
+        ) ? (
+          <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[400px]">
+            <p>Sorry, No therapist found with the applied filters.</p>
+            <Button variant="outline" className="mt-4" onClick={() => {
+              setFilters({
+                area: "",
+                rating: null,
+                gender: "",
+                languages: "",
+              });
+              setAppliedFilters({
+                area: "",
+                rating: null,
+                gender: "",
+                languages: "",
+              });
+              setPage(1);
+            }}>Reset Filters</Button>
+          </div>
+        ) : (
           <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[400px]">
             <Image src="/images/loading.svg" alt="Loading" width={60} height={60} /> Getting therapists...
           </div>
+        )
        )
        }
 
@@ -298,8 +318,8 @@ export const FilterModal = ({
             onChange={(e) => setFilters({ ...filters, gender: e.target.value })}
           >
             <option value="">All Genders</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
           </select>
         </div>
 

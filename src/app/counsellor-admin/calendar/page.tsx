@@ -1,7 +1,7 @@
-import Calendar from "@/components/Admin/pages/Calendar";
+import Calendar from "@/components/Admin-Counsellor/pages/Calendar";
 
 export const metadata = {
-  title: "Admin Dashboard | TalkCure",
+  title: "Counsellor Dashboard | TalkCure",
 };
 
 export default function AdminCalendar() {
