@@ -48,7 +48,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
           price_data: {
             currency: "usd", // fixed
             product_data: {
-              name: bookingData.serviceType || `Order at ${new Date().toISOString()}`,
+              name: `Session Booking - ${bookingData.serviceType} therapy` || `Order at ${new Date().toISOString()}`,
             },
             unit_amount: price,
           },

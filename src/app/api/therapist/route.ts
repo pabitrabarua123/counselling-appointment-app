@@ -20,15 +20,21 @@ export async function GET(request: NextRequest) {
     const languages = searchParams.get("languages");
     const isVerified = searchParams.get("isVerified");
 
-    const where: Prisma.TherapistWhereInput = {
-     ...(isVerified && { isVerified: false }),
+   let parsedIsVerified: boolean | undefined = undefined;
+   if (isVerified === 'true') parsedIsVerified = true; 
+   if (isVerified === 'false') parsedIsVerified = false;
+
+   const where: Prisma.TherapistWhereInput = {
+     ...(parsedIsVerified !== undefined && {
+          isVerified: parsedIsVerified,
+     }),
      ...(area && { area: { has: area } }),
      ...(rating && { rating: Number(rating) }),
      ...(gender && { gender }),
      ...(languages && { languages: { has: languages } }),
-    };
+   };
 
-    console.log("[THERAPIST_API] GET request received", { url: request.url, userId });
+   console.log("[THERAPIST_API] GET request received", { url: request.url, userId });
 
     if (userId) {
         console.log("[THERAPIST_API] Fetching therapist by userId", userId);

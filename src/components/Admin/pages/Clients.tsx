@@ -70,10 +70,13 @@ export default function Clients() {
   ];
 
   const fetchTherapists = async () => {
-    const res = await fetch("/api/therapist");
+    const params = new URLSearchParams({
+       isVerified: 'true',
+    });    
+    const res = await fetch(`/api/therapist?${params}`);
     const json = await res.json();
     console.log("Therapists API - Response:", json);
-    return json;
+    return json.therapists || [];
   };
 
   const { data: therapistsData } = useQuery({

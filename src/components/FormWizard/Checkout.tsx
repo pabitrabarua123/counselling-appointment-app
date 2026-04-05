@@ -7,39 +7,7 @@ export default function CheckoutPage({ bookingData }: { bookingData: BookingData
   const [loading, setLoading] = useState(false);
 
   const startTime = `${bookingData.sessionDate}T${bookingData.sessionTime.padStart(2, "0")}:00:00+05:30`;
-
-const endTime = `${bookingData.sessionDate}T${(parseInt(bookingData.sessionTime) + 1)
-  .toString()
-  .padStart(2, "0")}:00:00+05:30`;
-  const createEvent = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch('/api/events', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          therapistId: bookingData.therapistId,
-          summary: `Therapy Session - ${bookingData.serviceType}`,
-          description: `Session for ${bookingData.reason.join(", ")}`,
-          startTime: startTime,
-          endTime: endTime,
-        }),
-      });
-      const data = await response.json();
-      if (data && !data.error) {
-        console.log('Calendar event created successfully:', data);
-       // await handlePayment();
-      } else {
-        console.error('Failed to create calendar event');
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error('Error creating calendar event:', error);
-      setLoading(false);
-    }
-  };
+  const endTime = `${bookingData.sessionDate}T${(parseInt(bookingData.sessionTime) + 1).toString().padStart(2, "0")}:00:00+05:30`;
 
   const handlePayment = async () => {
     setLoading(true);
@@ -50,7 +18,7 @@ const endTime = `${bookingData.sessionDate}T${(parseInt(bookingData.sessionTime)
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          price: bookingData.serviceType === "couples" ? 2200 : bookingData.serviceType === "individual" ? 1900 : 2800,
+          price: bookingData.serviceType === "couple" ? 5900 : bookingData.serviceType === "individual" ? 4900 : 4900,
           bookingData: bookingData,
           sessionStart: startTime,
           sessionEnd: endTime,
@@ -109,12 +77,12 @@ const endTime = `${bookingData.sessionDate}T${(parseInt(bookingData.sessionTime)
 
       <div className="flex justify-between mb-3 text-gray-600">
         <span>Session Fee</span>
-        <span>$12.00</span>
+        <span>${(bookingData.serviceType === "couple" ? '59' : bookingData.serviceType === "individual" ? '49' : '49')}</span>
       </div>
 
       <div className="border-t pt-4 flex justify-between text-lg font-semibold text-gray-900">
         <span>Total</span>
-        <span>$12.00</span>
+        <span>${(bookingData.serviceType === "couple" ? '59' : bookingData.serviceType === "individual" ? '49' : '49')}</span>
       </div>
 
       <button

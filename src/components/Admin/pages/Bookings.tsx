@@ -93,10 +93,10 @@ export default function Bookings() {
   ];
 
   const fetchTherapists = async () => {
-    const res = await fetch("/api/therapist");
+    const res = await fetch("/api/therapist?isVerified=true");
     const json = await res.json();
     console.log("Therapists API - Response:", json);
-    return json;
+    return json.therapists || [];
   };
 
   const { data: therapistsData } = useQuery({

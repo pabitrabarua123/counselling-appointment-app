@@ -94,7 +94,7 @@ export type TabItem = {
 export interface BookingData {
   step: number
   // Step 1: Service type
-  serviceType: 'individual' | 'couples' | 'teen' | ''
+  serviceType: 'individual' | 'couple' | 'teen' | ''
   // Step 2: Reason for seeking help
   reason: string[]
   // Step 3: Sleep routine

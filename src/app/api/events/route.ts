@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
     const auth = new google.auth.JWT({
       email: process.env.GOOGLE_CLIENT_EMAIL,
       key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-      scopes: ["https://www.googleapis.com/auth/calendar.events"], // 👈 needs write access
+      scopes: ["https://www.googleapis.com/auth/calendar.events"],
     });
 
     const calendar = google.calendar({ version: "v3", auth });
