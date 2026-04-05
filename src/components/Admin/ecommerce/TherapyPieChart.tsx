@@ -12,7 +12,7 @@ export default function TherapyPieChart({ seriesPie } : Props) {
       width: 320,
       type: 'pie',
     },
-    labels: ['Individual', 'Couple'],
+    labels: ['Couple', 'Individual'],
     colors: ["#229d89", "#d23584"],
     dataLabels: {
       enabled: true,

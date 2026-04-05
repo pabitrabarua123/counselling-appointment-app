@@ -26,11 +26,11 @@ const TherapistsTab = () => {
      queryKey: ['therapists'],
      queryFn: async () => {
       console.log("Fetching therapists...");
-       const response = await fetch('/api/therapist');
+       const response = await fetch('/api/therapist?isVerified=true');
         if (!response.ok) {
           throw new Error('Network response was not ok');
        }
-       const data: TherapistApiResponse[] = await response.json();
+       const data: TherapistApiResponse[] = await response.json().then(res => res.therapists);
        return data.slice(0, 3).map((therapist) => {
           return {
             id: therapist.id,
@@ -66,7 +66,7 @@ const TherapistsTab = () => {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto mb-16">
       {/* Top Controls */}
       <div className="flex items-center justify-center gap-3 mb-8">
         <button

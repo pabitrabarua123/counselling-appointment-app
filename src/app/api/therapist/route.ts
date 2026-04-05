@@ -18,8 +18,10 @@ export async function GET(request: NextRequest) {
     const rating = searchParams.get("rating");
     const gender = searchParams.get("gender");
     const languages = searchParams.get("languages");
+    const isVerified = searchParams.get("isVerified");
 
     const where: Prisma.TherapistWhereInput = {
+     ...(isVerified && { isVerified: false }),
      ...(area && { area: { has: area } }),
      ...(rating && { rating: Number(rating) }),
      ...(gender && { gender }),
@@ -57,6 +59,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(therapist);
     }
 
+    // for pagination and filtering
     if (page) {
         console.log("[THERAPIST_API] Fetching therapists with pagination", { page, limit, skip, where });
         const [therapists, total] = await Promise.all([
@@ -86,20 +89,22 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ therapists, total });
     }
 
-    console.log("[THERAPIST_API] Fetching all therapists");
+    // this is for fetching all therapists on session booking from
+    console.log("[THERAPIST_API] Fetching therapists with where clause only: ", where);
     const therapists = await prisma.therapist.findMany({
+      where,  
       include: {
         user: {
           select: {
             id: true,
             name: true,
             email: true,
-            avatar: true
           }
         }
       }
     });
-    return NextResponse.json(therapists);
+    console.log("[THERAPIST_API] Therapists fetched: ", therapists);
+    return NextResponse.json({ therapists, total: therapists.length });
   } catch (error) {
     console.error("[THERAPIST_API_ERROR]", error);
     return new NextResponse("Internal Server Error", { status: 500 });

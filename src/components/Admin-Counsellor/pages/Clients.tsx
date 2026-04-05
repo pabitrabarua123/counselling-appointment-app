@@ -79,7 +79,9 @@ export default function Clients() {
   ];
 
   const fetchClients = async (pageNumber: number) => {
-    setLoading(1);
+    if (pageNumber === 1) {
+         setLoading(1); // full page loading
+    }
 
     const params = new URLSearchParams({
       page: String(pageNumber),
@@ -173,10 +175,10 @@ export default function Clients() {
 
         {/* ✅ LOADING */}
         {loading === 1 && (
-          <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[400px]">
-            <Image src="/images/loading.svg" alt="Loading" width={60} height={60} />
-            Getting clients...
-          </div>
+         <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[400px]">
+           <Image src="/images/loading.svg" alt="Loading" width={60} height={60} />
+            {isFilterApplied ? "Filtering clients..." : "Getting clients..."}
+         </div>
         )}
 
         {/* ✅ TABLE */}

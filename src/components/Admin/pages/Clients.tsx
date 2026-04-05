@@ -39,9 +39,6 @@ export default function Clients() {
   });
   const [appliedFilters, setAppliedFilters] = useState<Filters>(filters)
 
-  const [rowCount, setRowCount] = useState(0);
-  const [loading, setLoading] = useState(false);
-
   const columns: ColumnDef<Client>[] = [
     {
       accessorKey: "name",
@@ -84,7 +81,21 @@ export default function Clients() {
     queryFn: fetchTherapists,
   });
 
+  // 0 = success, 1 = loading, 2 = result as empty
+  const [loading, setLoading] = useState(0);
+  const [loading_more, setLoadingMore] = useState(false);
+  const [rowCount, setRowCount] = useState(0);
+  const isFilterApplied =
+    appliedFilters.sessionType !== "" ||
+    appliedFilters.therapistId !== "" ||
+    appliedFilters.startDate !== "" ||
+    appliedFilters.endDate !== "";
+
   const fetchClients = async (pageNumber: number) => {
+    if (pageNumber === 1) {
+         setLoading(1); // full page loading
+    }
+
     const params = new URLSearchParams({
       page: String(pageNumber),
       limit: String(limit),
@@ -94,18 +105,40 @@ export default function Clients() {
       endDate: appliedFilters.endDate,
     });
 
-    const res = await fetch(`/api/clients?${params}`);
-    const json = await res.json();
-    console.log("Clients API - Response:", json);
+    try {
+      const res = await fetch(`/api/clients?${params}`);
+      const json = await res.json();
 
-    if (pageNumber === 1) {
-      setData(json.data); // replace
-    } else {
-      setData((prev) => [...prev, ...json.data]); // append
+      console.log("Clients API - Response:", json);
+
+      if (!res.ok) {
+        setLoading(2);
+        return;
+      }
+
+      const newData = json.data || [];
+
+      if (pageNumber === 1) {
+        setData(newData);
+      } else {
+        setData((prev) => [...prev, ...newData]);
+      }
+
+      setRowCount(json.total || 0);
+
+      // ✅ important fix
+      if (pageNumber === 1 && newData.length === 0) {
+        setLoading(2);
+      } else {
+        setLoading(0);
+      }
+
+      setLoadingMore(false);
+    } catch (err) {
+      console.error(err);
+      setLoading(2);
+      setLoadingMore(false);
     }
-
-    setRowCount(json.total);
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -143,7 +176,15 @@ export default function Clients() {
     <div>
       <PageBreadcrumb pageTitle="Clients" />
       <ComponentCardTable title="All Clients" setShowFilter={setShowFilter} exportData={handleExport}>
-       { data.length !== 0 ? (
+            {/* ✅ LOADING */}
+              {loading === 1 && (
+                <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[400px]">
+                  <Image src="/images/loading.svg" alt="Loading" width={60} height={60} />
+                  {isFilterApplied ? "Filtering clients..." : "Getting clients..."}
+                </div>
+              )}
+
+       { loading === 0 && data.length > 0 && (
           <>
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
      <div className="max-w-full overflow-x-auto">
@@ -187,57 +228,47 @@ export default function Clients() {
           </div>
         </div>
 
-      {/* Load More Button */}
-      {hasMore && (
-        <div className="mt-4 mb-2 text-center">
-          <Button
-            variant="outline"
-            onClick={() => {setLoading(true); setPage((prev) => prev + 1);}}
-            disabled={loading}
-          >
-            { loading ? 
-              <>
-               <Image src="/images/loading.svg" alt="Loading" width={30} height={30} /> Loading...
-              </>
-              : "Load More" 
-            }
-          </Button>
-        </div>
-      )}   
+        {/* Load More Button */}  
+          {hasMore && (
+              <div className="mt-4 text-center">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setLoadingMore(true);
+                    setPage((prev) => prev + 1);
+                  }}
+                  disabled={loading_more}
+                >
+                  {loading_more ? "Loading..." : "Load More"}
+                </Button>
+              </div>
+            )}  
           </> 
-       ) : 
-       (
-        ( filters.therapistId !== "" ||
-          filters.sessionType !== "" ||
-          filters.startDate !== "" ||
-          filters.endDate !== "" ) ? (
-            <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[400px]">
-              <p>Sorry, No client found with the applied filters.</p>
-              <Button variant="outline" className="mt-4" onClick={() => {
-                setFilters({
-                  therapistId: "",
-                  sessionType: "",
-                  startDate: "",
-                  endDate: "",
-                });
-                setAppliedFilters({
-                  therapistId: "",
-                  sessionType: "",
-                  startDate: "",
-                  endDate: "",
-                });
-                setPage(1);
-              }}>
+       ) }
+
+        {/* ✅ EMPTY (NO FILTER) */}
+          {loading === 2 && !isFilterApplied && (
+            <div className="flex justify-center py-10 min-h-[400px]">
+              No clients found.
+            </div>
+          )}
+      
+        {/* ✅ EMPTY (WITH FILTER) */}
+          {loading === 2 && isFilterApplied && (
+            <div className="flex flex-col items-center py-10 min-h-[400px]">
+              <p>No clients found with applied filters.</p>
+              <Button
+                className="mt-4"
+                onClick={() => {
+                  setFilters({ sessionType: "", therapistId: "", startDate: "", endDate: "" });
+                  setAppliedFilters({ sessionType: "", therapistId: "", startDate: "", endDate: "" });
+                  setPage(1);
+                }}
+              >
                 Reset Filters
               </Button>
             </div>
-         ) : (
-            <div className="flex flex-col items-center justify-center py-10 text-gray-500 min-h-[400px]">
-              <Image src="/images/loading.svg" alt="Loading" width={60} height={60} /> Getting clients...
-            </div>
-          )
-         )
-       }
+          )}
 
       </ComponentCardTable>
       {showFilter && (

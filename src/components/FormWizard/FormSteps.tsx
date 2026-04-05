@@ -44,18 +44,30 @@ function formatTime24To12(time: string) {
   const FormSteps = ({bookingData, updateBookingData}: {bookingData: BookingData, updateBookingData: (updates: Partial<BookingData>) => void}) => {
     
     const [therapists, setTherapists] = useState<TherapistWithUser[]>([]);
+    const [loadingTherapists, setLoadingTherapists] = useState(false);
     useEffect(() => {
       const fetchTherapists = async () => {
+        setLoadingTherapists(true);
+        setTherapists([]);
+        const params = new URLSearchParams({
+           isVerified: 'true',
+           gender: bookingData.providerGenderPreference === 'No preference' ? '' : bookingData.providerGenderPreference.toLowerCase(),
+        });
+
         try {
-          const response = await fetch('/api/therapist');
+          const response = await fetch('/api/therapist?' + params.toString());
           const data = await response.json();
-          setTherapists(data);
+          console.log('Fetched therapists:', data);
+          setTherapists(data.therapists);
         } catch (error) {
           console.error('Error fetching therapists:', error);
         }
       };
-      fetchTherapists();
-    }, []);
+
+      if(bookingData.step === 6 && bookingData.therapistId === '') {
+         fetchTherapists();
+      }
+    }, [bookingData]);
 
     const [showTherapistPopup, setShowTherapistPopup] = useState({status: false, details: null as TherapistWithUser | null});
 
@@ -116,7 +128,7 @@ function formatTime24To12(time: string) {
             <div className="grid grid-cols-1 md:grid-cols-1 gap-y-6">
               {[
                 { id: 'individual', title: 'Individual Therapy', desc: 'Individualized support from a licensed therapist for ages 18+', icon: '/images/individual.png' },
-                { id: 'couples', title: 'Couples Therapy', desc: 'Relationship support to improve your connection with your partner', icon: '/images/couple.png' },
+                { id: 'couple', title: 'Couple Therapy', desc: 'Relationship support to improve your connection with your partner', icon: '/images/couple.png' },
               ].map(option => (
                 <div
                   key={option.id}
@@ -148,6 +160,7 @@ function formatTime24To12(time: string) {
             <div className="w-full text-center">
               <input
                 type="date"
+                max={new Date().toISOString().split("T")[0]}
                 value={bookingData.dateOfBirth}
                 onChange={(e) => updateBookingData({ dateOfBirth: e.target.value })}
                 className="w-[350px] p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -244,6 +257,17 @@ function formatTime24To12(time: string) {
           <>
             <h3 className="text-2xl font-semibold text-gray-900 mb-6">Choose Your Therapist</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              { therapists.length === 0 && (
+                <div className='flex flex-col items-center justify-center h-[300px] p-5 rounded-xl col-span-3'>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-4"></div>
+                  { loadingTherapists ? (
+                    <p className="text-gray-600 text-center">Loading therapists...</p>
+                  ) : (
+                    <p className="text-gray-600">No therapists found matching your criteria.</p>
+                  )}
+                </div>
+              ) }
+
               {therapists.map((therapist) => (
                 <div
                   key={therapist.id}
