@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
         skip,
         take: limit,
         orderBy: {
-          sessionStart: "desc",
+          createdAt: "desc",
         },
         include: {
           therapist: {
