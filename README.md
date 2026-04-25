@@ -2,30 +2,90 @@
 
 A modern Next.js application for booking online psychotherapy sessions with qualified therapists.
 
-## Features
+## About the Project
 
-- **Multi-step Booking Form**: Intuitive 4-step booking process
-- **Therapist Profiles**: Detailed profiles with specializations, ratings, and availability
-- **Responsive Design**: Mobile-first design with Tailwind CSS
-- **Type Safety**: Full TypeScript implementation
-- **Modern UI**: Clean, accessible interface with smooth animations
+TalkCure is a full-stack platform that bridges the gap between people seeking mental health support and qualified therapists. The application provides a seamless booking experience with integrated payment processing, calendar management, and separate dashboards for administrators and counselors. Built with modern web technologies, TalkCure prioritizes security, user experience, and reliable payment handling.
+
+**Core Functionality:**
+- Users can browse available therapists and book sessions with flexible scheduling
+- Secure authentication and session management
+- Integrated payment processing with Stripe
+- Google Calendar integration for real-time slot management
+- Comprehensive admin dashboard for managing users, bookings, and therapists
+- Dedicated counselor panel for managing client appointments and schedules
+
+## Project Structure
+
+```
+mindvoyage-next/
+├── src/
+│   ├── app/                          # Next.js App Router pages & API routes
+│   │   ├── api/                      # Backend API endpoints
+│   │   │   ├── auth/                 # NextAuth authentication
+│   │   │   ├── checkout/             # Stripe payment checkout
+│   │   │   ├── webhook/              # Stripe webhook handling
+│   │   │   ├── bookings/             # Booking CRUD operations
+│   │   │   ├── events/               # Google Calendar integration
+│   │   │   ├── clients/              # Client management
+│   │   │   ├── therapist/            # Therapist data
+│   │   │   ├── register/             # User registration
+│   │   │   ├── slots/                # Available time slots
+│   │   │   └── upload/               # File upload handling
+│   │   ├── admin/                    # Admin dashboard routes
+│   │   ├── counsellor-admin/         # Counselor dashboard routes
+│   │   ├── auth/                     # Sign-in/Sign-up pages
+│   │   ├── book/                     # Booking flow page
+│   │   └── layout.tsx                # Root layout
+│   ├── components/                   # Reusable React components
+│   │   ├── FormWizard/               # Multi-step booking form
+│   │   ├── Admin/                    # Admin dashboard components
+│   │   ├── Admin-Counsellor/         # Counselor dashboard components
+│   │   ├── Home/                     # Landing page sections
+│   │   ├── Navigation.tsx            # Header navigation
+│   │   ├── Footer.tsx                # Footer component
+│   │   └── providers/                # Context providers
+│   ├── lib/                          # Utility functions
+│   │   ├── auth.ts                   # Authentication helpers
+│   │   ├── emailService.ts           # Email notifications
+│   │   ├── cloudinary.ts             # Image storage
+│   │   └── utils.ts                  # General utilities
+│   └── types/                        # TypeScript type definitions
+│       ├── index.ts                  # Shared types
+│       └── next-auth.d.ts            # NextAuth types
+├── prisma/
+│   ├── schema.prisma                 # Database schema (PostgreSQL)
+│   └── migrations/                   # Database migrations
+├── public/                           # Static assets
+├── next.config.ts                    # Next.js configuration
+├── tsconfig.json                     # TypeScript configuration
+└── package.json                      # Dependencies & scripts
+```
+
+**Key Folders:**
+- `src/app/api/` — All backend logic: authentication, payment, booking, calendar integration
+- `src/components/FormWizard/` — Multi-step booking form logic
+- `src/types/` — Centralized TypeScript type definitions for type safety
+- `prisma/schema.prisma` — Database models for users, therapists, bookings, and sessions
+
 
 ## Tech Stack
 
 - **Framework**: Next.js 15 with App Router
-- **Styling**: Tailwind CSS
 - **Language**: TypeScript
+- **Database**: PostgreSQL (with Prisma ORM)
 - **Icons**: Lucide React
-- **UI Components**: Headless UI
+- **Styling**: Tailwind CSS
 
-## Getting Started
+## How to get started with the project
 
-1. **Install Dependencies**
+1. **Download or Clone the repo**
+
+2. **Install Dependencies**
    ```bash
    npm install
    ```
 
-2. **Run Development Server**
+3. **Run Development Server**
    ```bash
    npm run dev
    ```
@@ -33,90 +93,14 @@ A modern Next.js application for booking online psychotherapy sessions with qual
 3. **Open in Browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## Project Structure
-
-```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── book/              # Multi-step booking form
-│   ├── therapists/        # Therapist directory
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Home page
-├── components/            # Reusable UI components
-│   ├── Navigation.tsx     # Main navigation
-│   ├── Footer.tsx         # Site footer
-│   ├── LoadingSpinner.tsx # Loading states
-│   └── Notification.tsx   # Toast notifications
-├── data/                  # Static data
-│   └── therapists.ts      # Therapist and session data
-├── lib/                   # Utility functions
-│   └── utils.ts           # Class name utilities
-└── types/                 # TypeScript type definitions
-    └── index.ts           # Shared types
-```
-
-## Key Features
-
-### Multi-Step Booking Process
-
-1. **Choose Therapist**: Select from qualified mental health professionals
-2. **Session Details**: Choose session type, date, and time
-3. **Personal Information**: Provide contact and demographic information
-4. **Preferences**: Share therapy goals and previous experience
-5. **Confirmation**: Review and confirm booking details
-
-### Therapist Directory
-
-- Comprehensive therapist profiles
-- Specializations and certifications
-- Ratings and reviews
-- Availability and location
-- Language support
-
-### Responsive Design
-
-- Mobile-first approach
-- Touch-friendly interface
-- Accessible navigation
-- Optimized for all screen sizes
-
-## Development
-
-### Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-
-### Code Quality
-
-- TypeScript for type safety
-- ESLint for code quality
-- Consistent code formatting
-- Component-based architecture
 
 ## Deployment
 
 The application is ready for deployment on platforms like:
 
 - Vercel (recommended for Next.js)
-- Netlify
-- AWS Amplify
-- Any Node.js hosting platform
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+- You can use AWS also
 
 ## License
 
 This project is licensed under the MIT License.
-
-## Support
-
-For support or questions, please contact the development team or create an issue in the repository.
