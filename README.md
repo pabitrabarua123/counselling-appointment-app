@@ -8,11 +8,11 @@ TalkCure is a full-stack platform that bridges the gap between people seeking me
 
 **Core Functionality:**
 - Users can browse available therapists and book sessions with flexible scheduling
-- Secure authentication and session management
+- JWT based authentication with Next-Auth
 - Integrated payment processing with Stripe
 - Google Calendar integration for real-time slot management
-- Comprehensive admin dashboard for managing users, bookings, and therapists
-- Dedicated counselor panel for managing client appointments and schedules
+- Admin dashboard for managing users, bookings, and therapists
+- Counselor panel for managing client appointments and schedules
 
 ## Project Structure
 
