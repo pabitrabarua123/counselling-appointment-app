@@ -69,32 +69,34 @@ mindvoyage-next/
 
 ## Environment variables
 
-# App
+### App
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-# Auth
+### Auth
 AUTH_SECRET=""
 NEXTAUTH_SECRET=""
 NEXTAUTH_URL="http://localhost:3000"
 
+### Database
 DATABASE_URL=""
 DIRECT_URL=""
 
-
-# Misc
+### Environment (Production/Development)
 NODE_ENV=""
 
+### Google Calendar
 GOOGLE_CLIENT_EMAIL=""
 
+### Stripe
 STRIPE_SECRET_KEY=""
 STRIPE_WEBHOOK_SECRET=""
 
-# Email (Brevo SMTP)
+### Email (Brevo SMTP)
 BREVO_SMTP_LOGIN=""
 BREVO_SMTP_KEY=""
 BREVO_VERIFIED_SENDER=""
 
-# cloudinary
+### cloudinary
 CLOUDINARY_CLOUD_NAME=""
 CLOUDINARY_API_KEY=""
 CLOUDINARY_API_SECRET=""
