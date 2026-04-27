@@ -14,6 +14,14 @@ TalkCure is a full-stack platform that bridges the gap between people seeking me
 - Admin dashboard for managing users, bookings, and therapists
 - Counselor panel for managing client appointments and schedules
 
+## Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Database**: PostgreSQL (with Prisma ORM)
+- **Icons**: Lucide React
+- **Styling**: Tailwind CSS
+
 ## Project Structure
 
 ```
@@ -101,14 +109,6 @@ CLOUDINARY_CLOUD_NAME=""
 CLOUDINARY_API_KEY=""
 CLOUDINARY_API_SECRET=""
 
-
-## Tech Stack
-
-- **Framework**: Next.js 15 with App Router
-- **Language**: TypeScript
-- **Database**: PostgreSQL (with Prisma ORM)
-- **Icons**: Lucide React
-- **Styling**: Tailwind CSS
 
 ## How to get started with the project
 
