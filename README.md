@@ -116,7 +116,7 @@ CLOUDINARY_API_SECRET=""
    ```
 
 ### 5. Open in Browser
-    Navigate to [http://localhost:3000](http://localhost:3000)
+    Navigate to http://localhost:3000
 
 
 ## Deployment
