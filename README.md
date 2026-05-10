@@ -99,6 +99,9 @@ CLOUDINARY_API_SECRET=""
 ## How to get started with the project
 
 1. **Download or Clone the repo**
+```bash
+git clone https://github.com/pabitrabarua123/counselling-appointment-app.git
+```
 
 2. **Install Dependencies**
    ```bash
