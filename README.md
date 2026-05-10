@@ -98,23 +98,25 @@ CLOUDINARY_API_SECRET=""
 
 ## How to get started with the project
 
-1. **Download or Clone the repo**
-```bash
-git clone https://github.com/pabitrabarua123/counselling-appointment-app.git
-```
-
-2. **Install Dependencies**
+### 1. **Download or Clone the repo**
+   ```bash
+   git clone https://github.com/pabitrabarua123/counselling-appointment-app.git
+   ```
+### 2. Navigate to the project folder
+   ```bash
+   cd counselling-appointment-app
+   ```
+### 3. **Install Dependencies**
    ```bash
    npm install
    ```
-
-3. **Run Development Server**
+### 4. Run Development Server
    ```bash
    npm run dev
    ```
 
-3. **Open in Browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+### 5. Open in Browser
+    Navigate to [http://localhost:3000](http://localhost:3000)
 
 
 ## Deployment
